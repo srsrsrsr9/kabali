@@ -568,7 +568,7 @@ function SchoolsView(){
   }, [filt, s.rev()]);
 
   var controls = T.div({className:"bar"},
-    T.input({type:"search", placeholder:"Search school or area…", value:filt.q, style:{minWidth:"170px",flex:narrow?"1 1 100%":"none"},
+    T.input({type:"search", placeholder:"Search school or area…", value:filt.q, style:{minWidth:"210px",flex:narrow?"1 1 100%":"none"},
       onChange:function(e){ up("q", e.target.value); }}),
     T.select({value:filt.status, onChange:function(e){ up("status", e.target.value); }},
       T.option({value:"all"},"All statuses"),
