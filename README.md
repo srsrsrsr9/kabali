@@ -55,3 +55,25 @@ mix one-time and recurring charges. Distances are estimates from area
 centroids. Phone numbers came from public directories rather than the
 schools. No source confirms that any specific school offers Telugu — that
 is what the call sheet is for.
+
+## Building
+
+`index.html` and `report.html` are generated — edit the sources in `src/`
+and run `python3 build.py`. The build wraps each source in a document
+skeleton and, for the tracker, inlines React from `vendor/` so the file
+renders with no network at all. That matters: a copy sitting on a phone
+cannot depend on a CDN.
+
+## Two bugs worth remembering
+
+The element helper originally passed a children array unconditionally,
+so `T.input({...})` became `createElement('input', props, [])`. React
+rejects children on void elements, which threw during the first render
+and left a blank page — background painted, nothing else. It now spreads
+children as separate arguments, exactly like JSX.
+
+Separately, `store.all()` returns the cache object itself and the store
+mutates it in place, so `useMemo` dependencies never changed and the
+header counters stayed at zero while the data underneath was correct.
+The store now exposes `rev()`, a counter bumped on every notify, and the
+memoised views depend on that instead.

@@ -157,20 +157,44 @@ select.mini{font-size:.74rem;padding:4px 6px;max-width:148px}
 .lg b{color:var(--ink-3);font-weight:500}
 .empty{padding:32px 18px;text-align:center;color:var(--ink-3);font-size:.89rem}
 .err{background:var(--stop-bg);color:var(--stop);border:1px solid var(--stop);padding:9px 13px;border-radius:3px;font-size:.8rem;margin:13px 0}
+.warnbar{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn);padding:10px 13px;border-radius:3px;font-size:.82rem;margin:13px 0;line-height:1.5}
+.warnbar strong{display:block;margin-bottom:3px}
+.sync.none .led{background:var(--stop)}
+.backup{margin:14px 0;border:1px solid var(--rule);background:var(--surface);border-radius:4px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.backup textarea{min-height:120px;font-size:.72rem;line-height:1.45}
+.backup .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.backup .msg{font-size:.78rem}
+.backup .msg.ok{color:var(--go)}
+.backup .msg.bad{color:var(--stop)}
 .hint{font-size:.78rem;color:var(--ink-3);margin:10px 2px 0;line-height:1.5}
 @media (max-width:640px){.tile{border-right:none;border-bottom:1px solid var(--rule)}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
-<div id="root"></div>
+<div id="root"><noscript>This tracker needs JavaScript enabled.</noscript></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
 <script>
 (function(){
 "use strict";
+if (typeof React === "undefined" || typeof ReactDOM === "undefined"){
+  document.getElementById("root").innerHTML =
+    '<div style="font:15px/1.6 system-ui,sans-serif;max-width:34em;margin:12vh auto;padding:0 20px">'+
+    '<h1 style="font-size:1.2rem;margin:0 0 12px">This copy needs internet on first load</h1>'+
+    '<p style="margin:0 0 10px">The tracker loads React from a CDN, so an offline first open shows nothing. '+
+    'Connect to data or wi-fi and reload — after that the page is cached by the browser.</p>'+
+    '<p style="margin:0;color:#666">If it still fails, open the hosted copy instead, where nothing has to be fetched by you.</p></div>';
+  return;
+}
 var h = React.createElement;
-var T = new Proxy({}, { get:function(_,tag){ return function(p){ return h(tag,p,Array.prototype.slice.call(arguments,1)); }; } });
+// Spread children as separate args, exactly like JSX: no children at all for
+// void tags such as <input>, and no spurious key warnings for static children.
+var T = new Proxy({}, { get:function(_,tag){
+  return function(p){
+    return h.apply(null, [tag, p].concat(Array.prototype.slice.call(arguments, 1)));
+  };
+} });
 var useState = React.useState, useEffect = React.useEffect, useMemo = React.useMemo;
 
 /* ==========================================================
@@ -347,11 +371,24 @@ var COLS = ["schools","rentals","tasks"];
 var LS_KEY = "ddk-tracker-v1";
 
 var store = (function(){
-  var api=null, mode="loading", err=null;
+  var api=null, mode="loading", err=null, rev=0;
   var cache = {schools:{}, rentals:{}, tasks:{}};
   var subs = [];
-  function notify(){ for(var i=0;i<subs.length;i++) subs[i](); }
-  function saveLocal(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(cache)); }catch(e){} }
+  function notify(){ rev++; for(var i=0;i<subs.length;i++) subs[i](); }
+  function lsUsable(){
+    try{
+      var k="__probe"+Date.now();
+      localStorage.setItem(k,"1");
+      var ok = localStorage.getItem(k)==="1";
+      localStorage.removeItem(k);
+      return ok;
+    }catch(e){ return false; }
+  }
+  function saveLocal(){
+    if (mode!=="local") return;
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(cache)); }
+    catch(e){ mode="none"; err="This browser stopped saving — probably out of space. Use Backup before you close the page."; notify(); }
+  }
   function loadLocal(){
     try{
       var raw = JSON.parse(localStorage.getItem(LS_KEY)||"{}");
@@ -361,9 +398,14 @@ var store = (function(){
   function init(){
     var p=null;
     try{ if (window.claude && typeof window.claude.use === "function") p = window.claude.use("db"); }catch(e){ p=null; }
-    if (!p || typeof p.then !== "function"){ mode="local"; loadLocal(); notify(); return; }
+    function fallback(){
+      if (lsUsable()){ mode="local"; loadLocal(); }
+      else { mode="none"; }
+      notify();
+    }
+    if (!p || typeof p.then !== "function"){ fallback(); return; }
     p.then(function(cap){
-      if(!cap){ mode="local"; loadLocal(); notify(); return; }
+      if(!cap){ fallback(); return; }
       api=cap; mode="cloud";
       COLS.forEach(function(col){
         try{
@@ -380,12 +422,13 @@ var store = (function(){
         }catch(e){}
       });
       notify();
-    }, function(){ mode="local"; loadLocal(); notify(); });
+    }, fallback);
   }
   init();
   return {
     subscribe:function(fn){ subs.push(fn); return function(){ subs = subs.filter(function(f){return f!==fn;}); }; },
     mode:function(){ return mode; },
+    rev:function(){ return rev; },
     error:function(){ return err; },
     all:function(col){ return cache[col]||{}; },
     get:function(col,id){ return (cache[col]||{})[id]||null; },
@@ -407,7 +450,31 @@ var store = (function(){
       if(mode==="cloud"&&api){ api.doc(col+"/"+id).delete().catch(function(){}); }
       else saveLocal();
     },
-    newId:function(){ return "r"+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+    newId:function(){ return "r"+Date.now().toString(36)+Math.random().toString(36).slice(2,6); },
+    exportJSON:function(){
+      return JSON.stringify({format:"ddk-tracker", version:1, exportedAt:new Date().toISOString(), data:cache}, null, 2);
+    },
+    importJSON:function(text){
+      var parsed;
+      try{ parsed = JSON.parse(text); }
+      catch(e){ return "That is not valid JSON — paste the whole backup, including the outer braces."; }
+      var d = parsed && parsed.data;
+      if (!d || typeof d !== "object") return "No tracker data found in that text. Expected a backup with a \"data\" section.";
+      var wrote = 0;
+      COLS.forEach(function(col){
+        var incoming = d[col];
+        if (!incoming || typeof incoming !== "object") return;
+        Object.keys(incoming).forEach(function(id){
+          var row = incoming[id];
+          if (!row || typeof row !== "object") return;
+          cache[col][id] = Object.assign({}, cache[col][id] || {}, row);
+          wrote++;
+          if (mode==="cloud" && api){ api.doc(col+"/"+id).set(cache[col][id]).catch(function(){}); }
+        });
+      });
+      saveLocal(); notify();
+      return wrote ? null : "That backup was empty — nothing to restore.";
+    }
   };
 })();
 
@@ -498,7 +565,7 @@ function SchoolsView(){
       if (filt.phoned && !(rec.phone || sc.phone)) return false;
       return true;
     });
-  }, [filt, s.all("schools")]);
+  }, [filt, s.rev()]);
 
   var controls = T.div({className:"bar"},
     T.input({type:"search", placeholder:"Search school or area…", value:filt.q, style:{minWidth:"170px",flex:narrow?"1 1 100%":"none"},
@@ -758,6 +825,68 @@ function BriefView(){
 }
 
 /* ==========================================================
+   BACKUP — the escape hatch when the page cannot save itself
+   ========================================================== */
+function BackupPanel(props){
+  var s = props.s;
+  var t = useState(""), text = t[0], setText = t[1];
+  var m = useState(null), msg = m[0], setMsg = m[1];
+
+  function fill(){ setText(s.exportJSON()); setMsg({ok:true, t:"Everything you have entered is in the box. Copy it somewhere safe."}); }
+  function copy(){
+    var payload = text || s.exportJSON();
+    setText(payload);
+    function fallback(){
+      try{
+        var ta=document.createElement("textarea");
+        ta.value=payload; ta.style.position="fixed"; ta.style.opacity="0";
+        document.body.appendChild(ta); ta.select(); document.execCommand("copy");
+        document.body.removeChild(ta);
+        setMsg({ok:true, t:"Copied. Paste it into a note or email to yourself."});
+      }catch(e){ setMsg({ok:false, t:"Could not copy automatically — select the text in the box and copy it by hand."}); }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(payload).then(function(){
+        setMsg({ok:true, t:"Copied. Paste it into a note or email to yourself."});
+      }, fallback);
+    } else fallback();
+  }
+  function download(){
+    var payload = text || s.exportJSON();
+    setText(payload);
+    try{
+      var blob = new Blob([payload], {type:"application/json"});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url; a.download = "ddk-tracker-backup.json";
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+      setMsg({ok:true, t:"Saved as ddk-tracker-backup.json. On a phone this sometimes does nothing — use Copy instead."});
+    }catch(e){ setMsg({ok:false, t:"Download blocked here. Use Copy instead."}); }
+  }
+  function restore(){
+    if (!text.trim()){ setMsg({ok:false, t:"Paste a backup into the box first."}); return; }
+    var problem = s.importJSON(text);
+    setMsg(problem ? {ok:false, t:problem} : {ok:true, t:"Restored. Your entries are merged back in."});
+  }
+
+  return T.div({className:"backup"},
+    T.strong({style:{fontFamily:"Archivo,sans-serif", fontSize:".8rem"}}, "Backup and restore"),
+    T.p({style:{fontSize:".82rem", color:"var(--ink-2)"}},
+      s.mode()==="cloud"
+        ? "Your entries are saved for you and follow you between devices. A copy is still worth keeping before any big change — paste it into a note."
+        : "Everything you type lives in this browser on this device. Copy a backup before you clear browsing data, switch phones, or if the badge above is not green."),
+    T.div({className:"row"},
+      T.button({className:"btn", onClick:fill}, "Show my data"),
+      T.button({className:"btn primary", onClick:copy}, "Copy backup"),
+      s.mode()==="cloud" ? null : T.button({className:"btn", onClick:download}, "Download"),
+      T.button({className:"btn", onClick:restore}, "Restore from box")),
+    T.textarea({value:text, onChange:function(e){ setText(e.target.value); },
+      placeholder:"Press \u201CShow my data\u201D to fill this, or paste a saved backup here and press Restore."}),
+    msg ? T.p({className:"msg "+(msg.ok?"ok":"bad")}, msg.t) : null);
+}
+
+/* ==========================================================
    SHELL
    ========================================================== */
 function App(){
@@ -775,7 +904,7 @@ function App(){
       if(r.telugu==="r2"||r.telugu==="r3") tel++;
     });
     return {called:called, shortlist:shortlist, tel:tel};
-  },[recs]);
+  },[s.rev()]);
 
   var rentals=s.all("rentals");
   var rShort=Object.keys(rentals).filter(function(i){return rentals[i].status==="shortlist";}).length;
@@ -792,9 +921,12 @@ function App(){
         T.div(null,
           T.h1(null,"Doddanekkundi Tracker"),
           T.p({className:"sub"},"Grade 9 and Grade 5 into east Bengaluru, AY 2027–28 · IndiQube ETA, ORR")),
-        T.div({className:"sync "+(mode==="cloud"?"cloud":mode==="local"?"local":"")},
+        T.div({className:"sync "+(mode==="cloud"?"cloud":mode==="local"?"local":mode==="none"?"none":"")},
           T.span({className:"led"}),
-          mode==="cloud"?"Synced across your devices":mode==="local"?"Saved in this browser only":"Connecting…")),
+          mode==="cloud"?"Synced across your devices"
+            :mode==="local"?"Saved in this browser only"
+            :mode==="none"?"NOT saving — copy a backup"
+            :"Connecting…")),
       T.dl({className:"tiles"},
         T.div({className:"tile"}, T.dt({className:"tile-k"},"Schools"), T.dd({className:"tile-v"}, SCHOOLS.length)),
         T.div({className:"tile"}, T.dt({className:"tile-k"},"Contacted"), T.dd({className:"tile-v"}, counts.called, T.small(null," / "+SCHOOLS.length))),
@@ -808,9 +940,15 @@ function App(){
       })))),
     T.main({className:"app"},
       err ? T.div({className:"err"}, err) : null,
+      mode==="none" ? T.div({className:"warnbar"},
+        T.strong(null,"This copy cannot save anything."),
+        "Your browser is refusing local storage, which is common when an HTML file is opened straight off the filesystem rather than served over http. You can still read the page and tap the numbers, but anything you type will be gone when you close the tab. Copy a backup from the panel at the bottom of the Timeline tab before you close it — or use the hosted copy, where notes are saved for you.") : null,
+      mode==="local" ? T.div({className:"warnbar"},
+        T.strong(null,"Saved on this device only."),
+        "Notes typed here stay in this one browser: they will not appear on your laptop, and clearing browsing data erases them. The Backup panel at the bottom of the Timeline tab is how you move them.") : null,
       tab==="schools" ? h(SchoolsView) :
       tab==="rentals" ? h(RentalsView) :
-      tab==="timeline" ? h(TimelineView) : h(BriefView))
+      tab==="timeline" ? T.div(null, h(TimelineView), h(BackupPanel,{s:s})) : h(BriefView))
   );
 }
 
