@@ -1,0 +1,649 @@
+<title>The Doddanekkundi Move</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+
+<style>
+:root{
+  --ground:#F4F6F8;
+  --surface:#FFFFFF;
+  --surface-2:#EDF1F5;
+  --ink:#141D26;
+  --ink-2:#4C5A6A;
+  --ink-3:#74838F;
+  --rule:#DCE3EA;
+  --rule-strong:#B9C4CF;
+  --accent:#1B5FB0;
+  --accent-soft:#E7EFFA;
+  --go:#166B45;      --go-bg:#E2F1E9;
+  --warn:#95610A;    --warn-bg:#F7EEDC;
+  --stop:#9E3229;    --stop-bg:#F7E5E2;
+  --shadow:0 1px 2px rgba(20,29,38,.06), 0 8px 24px -16px rgba(20,29,38,.28);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0D131A;
+    --surface:#151E27;
+    --surface-2:#1C2732;
+    --ink:#E4EAF0;
+    --ink-2:#A2B0BE;
+    --ink-3:#7B8996;
+    --rule:#26323E;
+    --rule-strong:#3A4854;
+    --accent:#79ADEF;
+    --accent-soft:#16283C;
+    --go:#5CC38C;      --go-bg:#12291F;
+    --warn:#DFAE55;    --warn-bg:#2C2314;
+    --stop:#E88C7F;    --stop-bg:#2E1A18;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0D131A;
+  --surface:#151E27;
+  --surface-2:#1C2732;
+  --ink:#E4EAF0;
+  --ink-2:#A2B0BE;
+  --ink-3:#7B8996;
+  --rule:#26323E;
+  --rule-strong:#3A4854;
+  --accent:#79ADEF;
+  --accent-soft:#16283C;
+  --go:#5CC38C;      --go-bg:#12291F;
+  --warn:#DFAE55;    --warn-bg:#2C2314;
+  --stop:#E88C7F;    --stop-bg:#2E1A18;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground);
+  color:var(--ink);
+  font-family:"Source Serif 4", Georgia, "Times New Roman", serif;
+  font-size:17px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 96px}
+.col{max-width:68ch}
+
+h1,h2,h3,h4,.eyebrow,.chip,th,.mono,.num{font-family:Archivo, "Helvetica Neue", Arial, sans-serif}
+h1{font-size:clamp(2.1rem,5vw,3.15rem);line-height:1.04;letter-spacing:-.022em;font-weight:700;margin:0;text-wrap:balance}
+h2{font-size:clamp(1.4rem,2.6vw,1.85rem);line-height:1.15;letter-spacing:-.015em;font-weight:700;margin:0;text-wrap:balance}
+h3{font-size:1.12rem;line-height:1.28;letter-spacing:-.008em;font-weight:600;margin:0;text-wrap:balance}
+h4{font-size:.82rem;text-transform:uppercase;letter-spacing:.1em;font-weight:600;color:var(--ink-3);margin:0}
+p{margin:0}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+.eyebrow{
+  font-size:.72rem;text-transform:uppercase;letter-spacing:.16em;font-weight:600;
+  color:var(--accent);
+}
+.mono{font-family:"IBM Plex Mono", ui-monospace, Menlo, monospace;font-variant-numeric:tabular-nums}
+
+/* ---- masthead ---- */
+header.top{
+  border-bottom:1px solid var(--rule);
+  background:var(--surface);
+  margin-bottom:56px;
+}
+.top-inner{max-width:1120px;margin:0 auto;padding:52px 24px 44px;display:flex;flex-direction:column;gap:26px}
+.route{display:flex;align-items:center;gap:0;flex-wrap:wrap;font-family:"IBM Plex Mono",monospace;font-size:.74rem;letter-spacing:.04em;color:var(--ink-2)}
+.route span{white-space:nowrap}
+.route .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block;margin:0 9px}
+.route .seg{height:1px;width:22px;background:var(--rule-strong);display:inline-block;margin:0 2px}
+.lede{font-size:1.16rem;line-height:1.55;color:var(--ink-2);max-width:60ch}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:0;border-top:1px solid var(--rule);margin-top:6px}
+.fact{padding:16px 20px 14px 0;border-right:1px solid var(--rule)}
+.fact:last-child{border-right:none}
+.fact dt{font-family:Archivo,sans-serif;font-size:.68rem;text-transform:uppercase;letter-spacing:.11em;color:var(--ink-3);font-weight:600;margin-bottom:5px}
+.fact dd{margin:0;font-family:"IBM Plex Mono",monospace;font-size:.95rem;font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums}
+
+/* ---- sections ---- */
+section{margin-bottom:72px}
+.sec-head{display:flex;flex-direction:column;gap:10px;margin-bottom:26px;padding-bottom:14px;border-bottom:2px solid var(--ink)}
+.stack{display:flex;flex-direction:column;gap:18px}
+.stack-tight{display:flex;flex-direction:column;gap:11px}
+
+/* ---- callout ---- */
+.callout{
+  background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--accent);
+  padding:20px 22px;display:flex;flex-direction:column;gap:9px;
+}
+.callout.warn{border-left-color:var(--warn)}
+.callout.stop{border-left-color:var(--stop)}
+
+/* ---- tables ---- */
+.scroller{overflow-x:auto;border:1px solid var(--rule);background:var(--surface);-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:.9rem}
+caption{text-align:left;font-family:Archivo,sans-serif;font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);font-weight:600;padding:0 0 10px}
+th{
+  font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600;color:var(--ink-3);
+  text-align:left;padding:12px 14px;border-bottom:1px solid var(--rule-strong);white-space:nowrap;
+  background:var(--surface-2);position:sticky;top:0;
+}
+td{padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.42}
+tbody tr:last-child td{border-bottom:none}
+td.n{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-size:.85rem;white-space:nowrap;color:var(--ink-2)}
+td.name{font-family:Archivo,sans-serif;font-weight:600;font-size:.92rem;min-width:190px}
+td .sub{display:block;font-family:"IBM Plex Mono",monospace;font-size:.73rem;color:var(--ink-3);font-weight:400;margin-top:2px}
+
+.chip{
+  display:inline-block;font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600;
+  padding:3px 8px;border-radius:2px;white-space:nowrap;
+}
+.chip.go{background:var(--go-bg);color:var(--go)}
+.chip.verify{background:var(--warn-bg);color:var(--warn)}
+.chip.drop{background:var(--stop-bg);color:var(--stop)}
+.chip.plain{background:var(--surface-2);color:var(--ink-2)}
+
+/* ---- config cards ---- */
+.configs{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:0;border:1px solid var(--rule);background:var(--surface)}
+.config{padding:22px;border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:12px}
+.config:last-child{border-right:none}
+.config.pick{background:var(--accent-soft)}
+.config-rank{display:flex;align-items:baseline;gap:9px}
+.config-rank .r{font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:600;letter-spacing:.08em;color:var(--ink-3)}
+.langline{display:flex;flex-direction:column;gap:5px;font-family:"IBM Plex Mono",monospace;font-size:.82rem}
+.langline div{display:flex;gap:10px;align-items:baseline}
+.langline b{color:var(--ink-3);font-weight:500;min-width:24px}
+.pro,.con{font-size:.88rem;line-height:1.5;display:flex;gap:8px}
+.pro::before{content:"+";color:var(--go);font-family:"IBM Plex Mono",monospace;font-weight:600}
+.con::before{content:"\2212";color:var(--stop);font-family:"IBM Plex Mono",monospace;font-weight:600}
+
+/* ---- two kids split ---- */
+.split{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px}
+.panel{background:var(--surface);border:1px solid var(--rule);padding:24px;display:flex;flex-direction:column;gap:14px}
+.panel .kidline{font-family:"IBM Plex Mono",monospace;font-size:.76rem;color:var(--ink-3);letter-spacing:.03em}
+
+/* ---- timeline ---- */
+.timeline{position:relative;padding-left:30px;display:flex;flex-direction:column;gap:26px}
+.timeline::before{content:"";position:absolute;left:5px;top:8px;bottom:8px;width:2px;background:var(--rule-strong)}
+.tl-item{position:relative;display:flex;flex-direction:column;gap:5px}
+.tl-item::before{
+  content:"";position:absolute;left:-30px;top:6px;width:12px;height:12px;border-radius:50%;
+  background:var(--ground);border:2px solid var(--accent);
+}
+.tl-item.now::before{background:var(--accent)}
+.tl-when{font-family:"IBM Plex Mono",monospace;font-size:.74rem;font-weight:600;letter-spacing:.05em;color:var(--accent);text-transform:uppercase}
+
+/* ---- script list ---- */
+ol.script{margin:0;padding-left:0;list-style:none;counter-reset:q;display:flex;flex-direction:column;gap:0;border:1px solid var(--rule);background:var(--surface)}
+ol.script li{counter-increment:q;padding:15px 20px 15px 54px;position:relative;border-bottom:1px solid var(--rule);font-size:.95rem;line-height:1.5}
+ol.script li:last-child{border-bottom:none}
+ol.script li::before{
+  content:"Q" counter(q);position:absolute;left:18px;top:15px;
+  font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:600;color:var(--ink-3);
+}
+ol.script li em{font-style:normal;color:var(--ink-3);font-size:.85rem;display:block;margin-top:4px}
+
+ul.plain{margin:0;padding-left:1.15em;display:flex;flex-direction:column;gap:8px}
+ul.plain li{padding-left:.15em}
+
+.footnote{font-size:.86rem;color:var(--ink-3);line-height:1.55}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:0}
+
+@media (prefers-reduced-motion: no-preference){
+  a{transition:color .15s ease}
+}
+@media (max-width:640px){
+  body{font-size:16px}
+  .fact{border-right:none;border-bottom:1px solid var(--rule)}
+  .config{border-right:none;border-bottom:1px solid var(--rule)}
+  .config:last-child{border-bottom:none}
+}
+</style>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="route">
+      <span>DODDANEKKUNDI</span><span class="seg"></span><span class="dot"></span><span class="seg"></span><span>MAHADEVAPURA</span><span class="seg"></span><span class="dot"></span><span class="seg"></span><span>KAGGADASAPURA</span><span class="seg"></span><span class="dot"></span><span class="seg"></span><span>WHITEFIELD</span>
+    </div>
+    <h1>The Doddanekkundi Move</h1>
+    <p class="lede">Schools and housing for AY&nbsp;2027–28, for a family entering Grade&nbsp;9 and Grade&nbsp;5 with English, Telugu and Hindi — into a state that requires Kannada, in the first year CBSE requires three languages.</p>
+    <dl class="facts">
+      <div class="fact"><dt>Anchor</dt><dd>IndiQube ETA, ORR</dd></div>
+      <div class="fact"><dt>Board</dt><dd>CBSE only</dd></div>
+      <div class="fact"><dt>Fee ceiling</dt><dd>₹5L / yr, both</dd></div>
+      <div class="fact"><dt>Rent ceiling</dt><dd>₹35k / mo all-in</dd></div>
+      <div class="fact"><dt>Decision window</dt><dd>Sep 26 → Feb 27</dd></div>
+    </dl>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ============ 1. THE HEADLINE ============ -->
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">Where this actually turns</span>
+    <h2>The language rule is the constraint, not the fees and not the commute</h2>
+  </div>
+
+  <div class="col stack">
+    <p>Your budget clears most of the schools in your tabs, and almost all of them are within a 20‑minute bus ride of IndiQube ETA. Neither of those is what will decide this. Two rules that both changed recently do:</p>
+
+    <div class="callout">
+      <h3>CBSE now requires three languages in Classes 9–10</h3>
+      <p>Circular <span class="mono">Acad‑33/2026</span>, effective 1 July 2026, makes R1, R2 and R3 compulsory from Class IX, with <strong>at least two of the three being native Indian languages</strong>. Since English is the medium and occupies the non‑native slot in a private English‑medium school, R2 and R3 must both be Indian languages. Only R1 and R2 are examined by the Board in Class X; <strong>R3 is assessed internally by the school</strong> and still appears on the CBSE certificate.</p>
+    </div>
+
+    <div class="callout warn">
+      <h3>Karnataka requires Kannada as the first or second language</h3>
+      <p>Under the Kannada Language Learning Act 2015 and the NOC rules the state began enforcing from 2024–25, CBSE and ICSE schools in Karnataka must teach Kannada as first or second language — <strong>not third</strong> — for Classes 1 to 10. The state used to accept it in the third slot and stopped. A 2023 PIL against this is still pending in the Karnataka High Court, with no final verdict; enforcement runs through the school's NOC, so it is the school, not you, that carries the risk.</p>
+    </div>
+
+    <p>Put together: <strong>English + Kannada + one more</strong> is the combination a Bengaluru CBSE school offers by default. Telugu is not the obstacle at the Board — CBSE runs full Class 9–10 syllabi and board papers for Telugu under codes <span class="mono">007</span> (Andhra Pradesh) and <span class="mono">089</span> (Telangana). The obstacle is that almost no private school in Bengaluru staffs it. Government schools do; private ones offer Kannada, Hindi, Sanskrit and sometimes French.</p>
+
+    <p>That sounds worse than it is, and the reason is the R3 change. <strong>A school that would never staff Telugu as a board‑examined subject can plausibly accept it as R3</strong>, because R3 carries no Board paper for your elder child's batch — assessment is entirely school‑based, and CBSE has explicitly told schools to make do with shared teachers and Class 6 textbooks while regional‑language capacity catches up. That is the door to push on.</p>
+  </div>
+</section>
+
+<!-- ============ 2. CONFIGURATIONS ============ -->
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">Grade 9 · entering 2027–28 · Class X Board in 2029</span>
+    <h2>Three language combinations, ranked</h2>
+  </div>
+
+  <div class="col stack" style="margin-bottom:24px">
+    <p>Your elder child's combination is locked at admission and carries into the Class X Board registration, so this is decided in the admissions conversation — not later. Ask for these in order.</p>
+  </div>
+
+  <div class="configs">
+    <div class="config pick">
+      <div class="config-rank"><span class="r">ASK FIRST</span><span class="chip go">Recommended</span></div>
+      <h3>English · Hindi · Telugu</h3>
+      <div class="langline">
+        <div><b>R1</b><span>English — Board</span></div>
+        <div><b>R2</b><span>Hindi — Board</span></div>
+        <div><b>R3</b><span>Telugu — internal</span></div>
+      </div>
+      <p class="pro">Hindi is already their third language, so the Board subject is one they have a base in.</p>
+      <p class="pro">Telugu costs the school almost nothing: no Board paper, school‑set assessment.</p>
+      <p class="pro">Telugu stays on the CBSE certificate.</p>
+      <p class="con">Drops Kannada entirely, which is what the state NOC asks for. Some schools will refuse on that ground alone.</p>
+    </div>
+
+    <div class="config">
+      <div class="config-rank"><span class="r">ASK SECOND</span><span class="chip verify">Best marks, hardest yes</span></div>
+      <h3>English · Telugu · Kannada</h3>
+      <div class="langline">
+        <div><b>R1</b><span>English — Board</span></div>
+        <div><b>R2</b><span>Telugu <span class="mono">007/089</span> — Board</span></div>
+        <div><b>R3</b><span>Kannada — internal</span></div>
+      </div>
+      <p class="pro">A native speaker banks a near‑full score in a Board language. On a five‑subject Class X aggregate that is worth real percentage points.</p>
+      <p class="pro">Kannada is present, which helps the school's compliance story.</p>
+      <p class="con">The school must already be registered on OASIS to offer <span class="mono">007</span> or <span class="mono">089</span>. Realistically only the Telugu‑origin chains will be.</p>
+      <p class="con">Kannada sits at R3, which is exactly where the state stopped allowing it.</p>
+    </div>
+
+    <div class="config">
+      <div class="config-rank"><span class="r">FALLBACK</span><span class="chip drop">Academically risky</span></div>
+      <h3>English · Kannada · Telugu</h3>
+      <div class="langline">
+        <div><b>R1</b><span>English — Board</span></div>
+        <div><b>R2</b><span>Kannada — Board</span></div>
+        <div><b>R3</b><span>Telugu or Hindi — internal</span></div>
+      </div>
+      <p class="pro">Fully compliant. Every school can say yes to this one.</p>
+      <p class="con">Your child starts Kannada from zero in Class 9 and sits a Board paper in it about eighteen months later. That is a live threat to the Class X aggregate, in the one year it is hardest to absorb.</p>
+      <p class="con">Only take this if a school you otherwise want will not move — and then get Telugu into R3 so it is at least on the record.</p>
+    </div>
+  </div>
+
+  <div class="col stack" style="margin-top:24px">
+    <div class="callout">
+      <h3>The relief to cite by name</h3>
+      <p>Karnataka's own framing provides that a student who has taken a particular language combination at the middle stage may continue it on reaching Class 9. Your elder child is finishing Grade 8 on Telugu and Hindi right now — that is precisely the middle‑stage combination the relief contemplates. Raise it explicitly; a principal who has heard it before will handle it differently from one hearing a parent ask for a favour.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. THE YOUNGER CHILD ============ -->
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">The two children need different answers</span>
+    <h2>Grade 5 is a different problem, and the timing flips it</h2>
+  </div>
+
+  <div class="split">
+    <div class="panel">
+      <p class="kidline">GRADE 9 · CLASS X BOARD 2029</p>
+      <h3>R3 is internal. Optimise for the Board aggregate.</h3>
+      <p>The first Class X Board exam in R3 is for the cohort that entered Class 6 in 2026–27 — Class X in 2030–31. Your elder child sits the Board a year or two before that, so <strong>R3 stays school‑assessed for them</strong>. Every language argument above is about protecting the two subjects that do count. Fight for Hindi or Telugu at R2; treat R3 as free.</p>
+      <p class="footnote">Worth confirming in writing with the school, since it rests on the transitional schedule rather than a rule stated for this specific batch.</p>
+    </div>
+    <div class="panel">
+      <p class="kidline">GRADE 5 · CLASS X BOARD 2032–33</p>
+      <h3>R3 will be examined. Kannada is unavoidable — and fine.</h3>
+      <p>Two things follow. First, Kannada as first or second language is mandatory up to Class 8, so this child <em>will</em> do Kannada — but with five years of runway before anything is graded by the Board, that is genuinely learnable and worth having in Bengaluru. Don't spend negotiating capital fighting it.</p>
+      <p>Second, and less obvious: by 2032–33 <strong>R3 is a Board subject</strong>. If Telugu never enters this child's school record, it never appears on the certificate. Aim to get Telugu into R3 from Class 6 onward — for a native speaker that turns the third language from a burden into the easiest paper on the sheet.</p>
+    </div>
+  </div>
+
+  <div class="col stack" style="margin-top:22px">
+    <p>The practical read: your realistic school offer is <strong>English + Kannada + Hindi</strong> for the younger child, with Telugu kept alive at home, and a school that will revisit R3 at Class 6. For the elder, push hard for Telugu in any slot. It is entirely reasonable for the two children to end up on different combinations inside the same school.</p>
+  </div>
+</section>
+
+<!-- ============ 4. SCHOOL TABLE ============ -->
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">28 schools from your tabs, plus what they screen out on</span>
+    <h2>The shortlist</h2>
+  </div>
+
+  <div class="col stack" style="margin-bottom:22px">
+    <p>Two filters do most of the cutting before anyone talks about quality. <strong>Does it run Classes XI–XII?</strong> A Grade 9 entrant at a school that ends at Class 10 has to move again in two years, at the worst possible moment. And <strong>does it offer any Telugu at all?</strong> — which correlates strongly with the school's origin, which is why the Telugu‑founded chains are worth a call even where you would not otherwise look.</p>
+    <p>Fees below are indicative first‑year totals compiled from school‑listing aggregators, not from the schools. Treat them as a sorting aid, not a quote — several of them bundle one‑time admission and deposit amounts into what looks like an annual figure.</p>
+  </div>
+
+  <div class="scroller">
+    <table>
+      <caption>Distances are approximate road distance from IndiQube ETA, Doddanekkundi ORR</caption>
+      <thead>
+        <tr><th>School</th><th>Area</th><th>~km</th><th>To</th><th>Indicative ₹/yr</th><th>Read</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="name">VIBGYOR Rise<span class="sub">CBSE</span></td>
+          <td>Doddanekkundi</td><td class="n">1.5–2</td><td class="n">10 ?</td><td class="n">1.14–1.65L</td>
+          <td><span class="chip go">Shortlist</span> Closest school to your office by a distance. Confirm whether this campus runs XI–XII.</td>
+        </tr>
+        <tr>
+          <td class="name">Ekya School ITPL<span class="sub">CBSE</span></td>
+          <td>Doddanekkundi Extn</td><td class="n">2–3</td><td class="n">XII</td><td class="n">1.8–2.4L</td>
+          <td><span class="chip verify">Verify</span> Strong academics, runs to XII, walkable-ish. The one real budget risk on this list — at two children it likely breaks ₹5L on its own.</td>
+        </tr>
+        <tr>
+          <td class="name">Narayana e‑Techno<span class="sub">CBSE · Telugu-origin chain</span></td>
+          <td>Marathahalli</td><td class="n">3</td><td class="n">X</td><td class="n">60–85k</td>
+          <td><span class="chip go">Call first</span> Best odds on the whole list for a Telugu answer, and cheap. Exam-drill culture; typically ends at X with PU handled separately.</td>
+        </tr>
+        <tr>
+          <td class="name">Sri Chaitanya<span class="sub">CBSE · Telugu-origin chain</span></td>
+          <td>Marathahalli / Munnekolala</td><td class="n">3</td><td class="n">X</td><td class="n">45–75k</td>
+          <td><span class="chip go">Call first</span> Same logic as Narayana. High pressure — I'd weigh this differently for your Grade 5 child than your Grade 9 one.</td>
+        </tr>
+        <tr>
+          <td class="name">NPS Vibhuthipura<span class="sub">CBSE</span></td>
+          <td>Vibhuthipura</td><td class="n">3–4</td><td class="n">growing</td><td class="n">verify</td>
+          <td><span class="chip verify">Verify</span> Grade 8 only starts in 2026–27, so Grade 9 would be its first-ever cohort. Excellent brand, no results record at this campus yet.</td>
+        </tr>
+        <tr>
+          <td class="name">Ravindra Bharathi Global<span class="sub">CBSE · Telugu-origin chain</span></td>
+          <td>Marathahalli</td><td class="n">3–4</td><td class="n">X</td><td class="n">70–80k</td>
+          <td><span class="chip go">Call first</span> Hyderabad chain, so Telugu is plausible. Ends at X — a two-year stop for your elder child.</td>
+        </tr>
+        <tr>
+          <td class="name">MTB Jnana Jyothi Vidyanikethan</td>
+          <td>Mahadevapura</td><td class="n">3</td><td class="n">verify</td><td class="n">verify</td>
+          <td><span class="chip verify">Verify</span> Small local school, low fees. Check Class 9 seats and XI–XII before investing time.</td>
+        </tr>
+        <tr>
+          <td class="name">Pragathi School<span class="sub">CBSE + state</span></td>
+          <td>Mahadevapura</td><td class="n">3</td><td class="n">verify</td><td class="n">~70k–1.2L</td>
+          <td><span class="chip verify">Verify</span> Runs both boards, which sometimes means more language flexibility. Worth one call for that reason alone.</td>
+        </tr>
+        <tr>
+          <td class="name">The Brigade School<span class="sub">CBSE</span></td>
+          <td>Mahadevapura / Whitefield</td><td class="n">4</td><td class="n">XII</td><td class="n">~72k–1.2L</td>
+          <td><span class="chip go">Shortlist</span> Runs to XII, well inside budget, close. One of the better balanced options in your set.</td>
+        </tr>
+        <tr>
+          <td class="name">MVJ International<span class="sub">CBSE</span></td>
+          <td>Marathahalli</td><td class="n">4</td><td class="n">verify</td><td class="n">~70k+</td>
+          <td><span class="chip go">Shortlist</span> Ranked #3 in Whitefield-Plus CBSE and #15 in Bengaluru in the Times School Survey 2025–26. Best quality-per-rupee signal nearby.</td>
+        </tr>
+        <tr>
+          <td class="name">Narayana Co School</td>
+          <td>Kundalahalli</td><td class="n">4</td><td class="n">X</td><td class="n">~60–85k</td>
+          <td><span class="chip plain">Backup</span> Same chain, second campus — useful if Marathahalli has no Grade 9 seat.</td>
+        </tr>
+        <tr>
+          <td class="name">Vagdevi Vilas<span class="sub">CBSE</span></td>
+          <td>Marathahalli</td><td class="n">4</td><td class="n">X</td><td class="n">~77k</td>
+          <td><span class="chip verify">Verify</span> Applications open at Ganesha Chaturthi each year — i.e. right now. Ends at X.</td>
+        </tr>
+        <tr>
+          <td class="name">Genius Global School<span class="sub">CBSE</span></td>
+          <td>Marathahalli</td><td class="n">4</td><td class="n">X</td><td class="n">55k–1.06L</td>
+          <td><span class="chip drop">Drop for G9</span> Nursery–10 only. Still viable for your Grade 5 child if the language answer is good.</td>
+        </tr>
+        <tr>
+          <td class="name">Janes International</td>
+          <td>Hoodi / Garudacharpalya</td><td class="n">4–5</td><td class="n">verify</td><td class="n">verify</td>
+          <td><span class="chip verify">Verify</span> I couldn't confirm board, fees or grade range from any source. Call before visiting.</td>
+        </tr>
+        <tr>
+          <td class="name">The Vrukksha School<span class="sub">CBSE</span></td>
+          <td>Mahadevapura / Dooravani Nagar</td><td class="n">5</td><td class="n">verify</td><td class="n">~43–50k</td>
+          <td><span class="chip verify">Verify</span> Cheapest credible option in the ring. Newer school — ask directly about Class X results history.</td>
+        </tr>
+        <tr>
+          <td class="name">SM English School</td>
+          <td>Hoodi</td><td class="n">5</td><td class="n">verify</td><td class="n">verify</td>
+          <td><span class="chip verify">Verify</span> Society founded 1965; board affiliation not confirmable online. Confirm it is CBSE before anything else.</td>
+        </tr>
+        <tr>
+          <td class="name">Gopalan National School<span class="sub">ICSE</span></td>
+          <td>Mahadevapura</td><td class="n">5</td><td class="n">—</td><td class="n">—</td>
+          <td><span class="chip drop">Drop</span> ICSE, not CBSE. If you want the group, check Gopalan International at Hoodi instead — different board.</td>
+        </tr>
+        <tr>
+          <td class="name">Shishya BEML Public School<span class="sub">CBSE</span></td>
+          <td>Kaggadasapura</td><td class="n">6</td><td class="n">XII</td><td class="n">1.08–1.18L</td>
+          <td><span class="chip go">Shortlist</span> Since 1994, CBSE to XII, sensible fees, established results. Note it is Kaggadasapura, not Whitefield.</td>
+        </tr>
+        <tr>
+          <td class="name">Geethanjali Vidyalaya<span class="sub">CBSE</span></td>
+          <td>Kaggadasapura / CV Raman Nagar</td><td class="n">6</td><td class="n">XII</td><td class="n">verify</td>
+          <td><span class="chip go">Shortlist</span> 25 years, 2.5-acre campus, ~1,100 students, Nursery–XII. Good size-to-attention ratio.</td>
+        </tr>
+        <tr>
+          <td class="name">Narayana e‑Techno</td>
+          <td>Kaggadasapura</td><td class="n">6</td><td class="n">X</td><td class="n">~60–85k</td>
+          <td><span class="chip plain">Backup</span> Third Narayana campus in range. Ask the chain centrally about Telugu, then pick the campus with a seat.</td>
+        </tr>
+        <tr>
+          <td class="name">Narayana e‑Techno</td>
+          <td>KR Puram</td><td class="n">6</td><td class="n">X</td><td class="n">~60–85k</td>
+          <td><span class="chip plain">Backup</span> As above.</td>
+        </tr>
+        <tr>
+          <td class="name">Amara Jyothi Public School<span class="sub">CBSE</span></td>
+          <td>KR Puram / Devasandra</td><td class="n">6–7</td><td class="n">XII</td><td class="n">low</td>
+          <td><span class="chip go">Shortlist</span> Since 1998, Pre-Nursery to XII, genuinely inexpensive. Strong value play if the bus route reaches you.</td>
+        </tr>
+        <tr>
+          <td class="name">Orchids The International<span class="sub">CBSE</span></td>
+          <td>CV Raman Nagar</td><td class="n">6–7</td><td class="n">X</td><td class="n">1.19–2.3L</td>
+          <td><span class="chip drop">Drop for G9</span> Nursery–10 only, and priced near the top of your band. Kannada is explicitly not a prerequisite here, which makes it worth a language call for the Grade 5 child.</td>
+        </tr>
+        <tr>
+          <td class="name">EuroSchool<span class="sub">CBSE</span></td>
+          <td>Whitefield</td><td class="n">7–8</td><td class="n">XII</td><td class="n">1.63–1.79L</td>
+          <td><span class="chip verify">Verify</span> Nursery–12, solid. Two children here plus transport lands right at your ₹5L ceiling.</td>
+        </tr>
+        <tr>
+          <td class="name">Narayana Olympiad</td>
+          <td>Kasturi Nagar</td><td class="n">8</td><td class="n">X</td><td class="n">~60–85k</td>
+          <td><span class="chip plain">Backup</span> Furthest Narayana. Only if it is the campus that says yes to Telugu.</td>
+        </tr>
+        <tr>
+          <td class="name">Vishwa Vidyapeeth<span class="sub">CBSE / ICSE / IGCSE</span></td>
+          <td>Varthur</td><td class="n">8–9</td><td class="n">XII</td><td class="n">verify</td>
+          <td><span class="chip verify">Verify</span> Multi-board campus to XII. Wrong side of Varthur traffic from Doddanekkundi at 8am.</td>
+        </tr>
+        <tr>
+          <td class="name">Presidency School Bangalore East<span class="sub">CBSE</span></td>
+          <td>Kasturi Nagar</td><td class="n">8–9</td><td class="n">XII</td><td class="n">verify</td>
+          <td><span class="chip verify">Verify</span> Runs to XII, placement test for all entrants. Registration historically opens 1 October — diarise it.</td>
+        </tr>
+        <tr>
+          <td class="name">Poornaprajna Education Centre<span class="sub">CBSE · affil 831617</span></td>
+          <td>Indiranagar</td><td class="n">9–10</td><td class="n">XII</td><td class="n">verify</td>
+          <td><span class="chip drop">Drop</span> Good school, wrong geography. From Doddanekkundi this is a daily crawl down ORR in both peaks.</td>
+        </tr>
+        <tr>
+          <td class="name">New Pratham Public School</td>
+          <td>unconfirmed</td><td class="n">?</td><td class="n">?</td><td class="n">?</td>
+          <td><span class="chip verify">Verify</span> Nothing reliable surfaced. Get the address off the site and check it against your rental zone before spending a visit.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col stack" style="margin-top:24px">
+    <div class="callout">
+      <h3>If I had to pick three to call on Monday</h3>
+      <p><strong>Narayana e‑Techno Marathahalli</strong> — the highest-probability Telugu answer, at a price that leaves room in the budget. <strong>The Brigade School Mahadevapura</strong> — runs to XII, close, affordable, unremarkable in the good way. <strong>Shishya BEML Kaggadasapura</strong> — thirty years of Class X results and a fee that fits both children comfortably. Then let the language answers, not the brochures, reorder the list.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. THE CALL SCRIPT ============ -->
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">Ask these in this order, on every call</span>
+    <h2>The nine questions</h2>
+  </div>
+
+  <div class="col stack" style="margin-bottom:20px">
+    <p>Front desks will give you fee sheets and campus tours. None of that resolves your actual problem. Lead with the language question and name the circular — it changes who you get transferred to.</p>
+  </div>
+
+  <ol class="script">
+    <li>Which languages do you offer as R1, R2 and R3 for Class IX under Circular Acad‑33/2026?<em>If they don't know the circular, ask for the academic coordinator.</em></li>
+    <li>Are you registered on OASIS to offer Telugu — subject code 007 or 089?<em>This is a yes/no fact about the school, not an opinion. It settles Configuration 2 immediately.</em></li>
+    <li>If Telugu isn't available as R2, will you take it as R3 with internal school-based assessment?<em>Point out there is no Class X Board paper for R3 for this batch. This is the ask most likely to succeed.</em></li>
+    <li>Your NOC requires Kannada as first or second language. How do you handle a Class 9 lateral entrant from another state who has never studied Kannada?<em>Ask what they have actually done for previous such students — not what the policy says.</em></li>
+    <li>Is the combination locked at admission, and can it be changed before you upload Class IX registration to CBSE?<em>Get the deadline date. That is your real decision point.</em></li>
+    <li>Do you run Classes XI and XII, and in which streams?<em>For your Grade 9 child this is close to disqualifying if the answer is no.</em></li>
+    <li>Are there Class IX seats for 2027–28 at all, is there an entrance test, and on what date?</li>
+    <li>Does your bus cover [your rental zone]? What is the pickup time and the one-way ride time?<em>Ask for ride time, not distance. On ORR they are unrelated.</em></li>
+    <li>What is the full annual outgo — tuition, admission, transport, books, uniform, and any building or development fee?<em>Ask for it as one number per child per year, in writing.</em></li>
+  </ol>
+</section>
+
+<!-- ============ 6. HOUSING ============ -->
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">Rent · ₹30k preferred, ₹35k stretch, inclusive of maintenance</span>
+    <h2>Housing, honestly</h2>
+  </div>
+
+  <div class="col stack" style="margin-bottom:24px">
+    <p>The straight version: <strong>₹30–35k all‑in does not get you a 3BHK in a gated community anywhere in this corridor.</strong> Those are running ₹50–60k in Kundalahalli, Mahadevapura and Hoodi, and higher in the newer projects. What ₹30–35k does get you, reliably, is a <strong>2BHK</strong> — either in an older apartment society or as an independent builder floor — in every zone below.</p>
+    <p>So the useful reframing is: you almost certainly do not need to settle for a 1BHK. A builder-floor 2BHK in Kaggadasapura or Hoodi sits at ₹26–30k, which is inside your preferred number, not your stretch. With a Class 9 board-track student and a Grade 5 child sharing the same space for two years, the second room is worth more than the address is.</p>
+  </div>
+
+  <div class="scroller">
+    <table>
+      <caption>Rent bands observed on listing platforms, mid-2026 · all-in figures add ₹2–4k maintenance</caption>
+      <thead>
+        <tr><th>Zone</th><th>To office</th><th>2BHK</th><th>3BHK</th><th>The trade</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="name">A · Doddanekkundi, Munnekolala, AECS Layout, Marathahalli</td>
+          <td class="n">0–3 km</td><td class="n">₹25–38k</td><td class="n">₹45k+</td>
+          <td>Shortest commute in the city for you. Your budget reaches only the older stock here, and the ₹25k end means a compromised building. Densest school cluster.</td>
+        </tr>
+        <tr>
+          <td class="name">B · Kaggadasapura, Vignan Nagar, CV Raman Nagar</td>
+          <td class="n">5–7 km</td><td class="n">₹26–41k</td><td class="n">₹45k+</td>
+          <td><strong>Best value.</strong> Builder floors at ₹26–27k. Established residential area, not a construction site. Shishya BEML and Geethanjali are both local.</td>
+        </tr>
+        <tr>
+          <td class="name">C · Mahadevapura, Hoodi, Garudacharpalya</td>
+          <td class="n">3–5 km</td><td class="n">₹27–35k</td><td class="n">₹30–60k</td>
+          <td><strong>Best balance.</strong> The widest spread — Hoodi 2BHKs from ~₹27k, and 3BHKs off ORR occasionally at ₹30k. Central to Brigade, Vrukksha, Pragathi and MTB JJV.</td>
+        </tr>
+        <tr>
+          <td class="name">D · Kadugodi, Varthur, Panathur</td>
+          <td class="n">8–12 km</td><td class="n">₹22–30k</td><td class="n">₹35–60k</td>
+          <td>Cheapest per square foot, and where your budget finally stretches to three rooms. Costs you 45–60 minutes each way on Varthur and Panathur roads at peak.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="split" style="margin-top:26px">
+    <div class="panel">
+      <h3>The deposit rule changed in your favour</h3>
+      <p>Bengaluru's 10‑month deposit convention is no longer enforceable. The <strong>Karnataka Rent (Amendment) Act, 2025</strong> — gazetted 8 January 2026 — caps residential security deposits at <strong>two months' rent</strong>, on the Model Tenancy Act framework. At ₹32,000 rent that is ₹64,000 rather than ₹3.2 lakh.</p>
+      <p>Expect landlords and brokers in this corridor to quote 10 months anyway. Anything above two months is not enforceable in a Rent Tribunal — say so, and be ready to walk. Register the agreement digitally on <strong>Kaveri 2.0</strong>; skipping it carries a ₹5,000 penalty and leaves you without the protection.</p>
+    </div>
+    <div class="panel">
+      <h3>Hold the metro in mind before you sign</h3>
+      <p>The Namma Metro <strong>Blue Line</strong> along ORR — Silk Board to KR Puram, with a station at <strong>Doddanekkundi</strong> — is targeted for December 2026, after slipping from a June 2026 date. Assume further slippage; the corridor has a record.</p>
+      <p>The hedge is cheap: prefer a flat within walking distance of Doddanekkundi, Kundalahalli or Mahadevapura station, on a <strong>11‑month lease</strong> rather than a longer one. If the line opens on your first renewal, your commute problem disappears and rents in those pockets rise — you want to already be inside that, not chasing it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. TIMELINE ============ -->
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">You are at the start of the window, not ahead of it</span>
+    <h2>What happens when</h2>
+  </div>
+
+  <div class="col" style="margin-bottom:26px">
+    <p>Bengaluru CBSE admissions for 2027–28 open between roughly late August and December 2026 and run first‑come until seats fill. Vagdevi Vilas opens on Ganesha Chaturthi; Presidency East has opened on 1 October. Class 9 has far fewer seats than the entry grades and they go early.</p>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-item now">
+      <p class="tl-when">September 2026 — now</p>
+      <p>Call the three priority schools with the nine questions. Language answer first; do not let the conversation become a fee conversation. Log every answer in one sheet so you can compare.</p>
+    </div>
+    <div class="tl-item">
+      <p class="tl-when">October 2026</p>
+      <p>Registrations open at most schools. Apply broadly — application fees are small relative to the cost of having no Class 9 seat. Get any language accommodation confirmed <strong>by email</strong>, not verbally.</p>
+    </div>
+    <div class="tl-item">
+      <p class="tl-when">November – December 2026</p>
+      <p>Entrance tests and parent interactions. Shortlist to three. Visit at 8am on a school day and ride the actual bus route from your candidate rental zone — that number is the one that governs your family's mornings for four years.</p>
+    </div>
+    <div class="tl-item">
+      <p class="tl-when">December 2026</p>
+      <p>Metro Blue Line target date. Whatever its status by then, you will know enough to weight Zone A against Zone C. Pick your rental zone here — after the school is decided, not before.</p>
+    </div>
+    <div class="tl-item">
+      <p class="tl-when">January – February 2027</p>
+      <p>Accept an offer and pay. Request the Transfer Certificate from the current school — this is the step that most often runs late for interstate moves, so start it early. Confirm the CBSE Class IX registration deadline, which is when the language combination stops being changeable.</p>
+    </div>
+    <div class="tl-item">
+      <p class="tl-when">February – March 2027</p>
+      <p>Sign the lease. Two months' deposit, 11‑month term, registered on Kaveri 2.0. Time possession for a few weeks before the session starts, not the same week.</p>
+    </div>
+    <div class="tl-item">
+      <p class="tl-when">April – June 2027</p>
+      <p>Session begins — April at most schools in your list, June at a few. Confirm which, because it moves your entire move date by two months.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. CAVEATS ============ -->
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">What I could and couldn't establish</span>
+    <h2>Confidence notes</h2>
+  </div>
+
+  <div class="col stack">
+    <p><strong>Solid.</strong> The CBSE three‑language scheme and its transitional rules; the Karnataka Kannada mandate and its litigation status; Telugu's existence as CBSE subjects 007 and 089; the deposit cap under the Karnataka Rent (Amendment) Act 2025; the Blue Line schedule; the office address at IndiQube ETA, No. 38/4 adjacent to EMC2, Doddanekkundi ORR.</p>
+    <p><strong>Indicative only.</strong> Every fee figure. These come from school‑listing aggregators, which mix one‑time and recurring charges inconsistently and lag actual revisions. Also the distances, which are estimates from area centroids rather than measured routes.</p>
+    <p><strong>Not established, and not establishable online.</strong> Whether <em>any</em> specific school on this list will offer Telugu, in any slot. I searched hard for this and the honest finding is that Bengaluru private schools do not publish language offerings, and the general pattern reported by parents is Kannada and Hindi with Sanskrit or French, and Telugu essentially absent outside government schools. The Telugu‑origin chains are an inference from their founding and their student mix, not a confirmed fact. Question 2 in the call script is what settles it.</p>
+    <p class="footnote">One process note: outbound web fetching was blocked by this environment's egress policy, so everything above was assembled from search results rather than from reading school websites and the CBSE circular PDFs directly. That matters most for the fee figures and for Janes International, SM English School and New Pratham, where I could not confirm the basics.</p>
+    <hr class="rule" style="margin:8px 0">
+    <p class="footnote">Sources include CBSE Circular Acad‑33/2026 and the Board's 29 June 2026 press release on the three‑language guidelines; Deccan Herald and LiveLaw on the Kannada Language Learning Act and the pending High Court PIL; careers360 on the R3 rollout; the Karnataka Rent (Amendment) Act 2025 as reported in January 2026; BMRCL statements on the Blue Line; and school‑listing aggregators including uniapply, ezyschooling, schoolmykids and edustoke for fees and grade ranges.</p>
+  </div>
+</section>
+
+</div>

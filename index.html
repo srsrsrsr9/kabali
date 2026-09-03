@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Tracker for the east Bengaluru school search and house hunt, AY 2027-28.">
+<meta name="color-scheme" content="light dark">
+<style>html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Doddanekkundi Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<style>
+:root{
+  --ground:#F4F6F8; --surface:#FFFFFF; --surface-2:#EDF1F5; --surface-3:#E3E9EF;
+  --ink:#141D26; --ink-2:#4C5A6A; --ink-3:#74838F;
+  --rule:#DCE3EA; --rule-strong:#B9C4CF;
+  --accent:#1B5FB0; --accent-soft:#E7EFFA; --on-accent:#FFFFFF;
+  --go:#166B45; --go-bg:#E2F1E9;
+  --warn:#95610A; --warn-bg:#F7EEDC;
+  --stop:#9E3229; --stop-bg:#F7E5E2;
+  --idle:#5D6B79; --idle-bg:#E8EDF2;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0D131A; --surface:#151E27; --surface-2:#1C2732; --surface-3:#243140;
+    --ink:#E4EAF0; --ink-2:#A2B0BE; --ink-3:#7B8996;
+    --rule:#26323E; --rule-strong:#3A4854;
+    --accent:#79ADEF; --accent-soft:#16283C; --on-accent:#0D131A;
+    --go:#5CC38C; --go-bg:#12291F;
+    --warn:#DFAE55; --warn-bg:#2C2314;
+    --stop:#E88C7F; --stop-bg:#2E1A18;
+    --idle:#93A1B1; --idle-bg:#1E2933;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0D131A; --surface:#151E27; --surface-2:#1C2732; --surface-3:#243140;
+  --ink:#E4EAF0; --ink-2:#A2B0BE; --ink-3:#7B8996;
+  --rule:#26323E; --rule-strong:#3A4854;
+  --accent:#79ADEF; --accent-soft:#16283C; --on-accent:#0D131A;
+  --go:#5CC38C; --go-bg:#12291F;
+  --warn:#DFAE55; --warn-bg:#2C2314;
+  --stop:#E88C7F; --stop-bg:#2E1A18;
+  --idle:#93A1B1; --idle-bg:#1E2933;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:"Source Serif 4",Georgia,serif;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;margin:0}
+h1,h2,h3,h4,button,th,label,.ui{font-family:Archivo,"Helvetica Neue",Arial,sans-serif}
+.mono,td.n,input,select,textarea,.tile-v,.tel{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.app{max-width:1240px;margin:0 auto;padding:0 16px 90px}
+
+.hdr{background:var(--surface);border-bottom:1px solid var(--rule)}
+.hdr-in{max-width:1240px;margin:0 auto;padding:18px 16px 0;display:flex;flex-direction:column;gap:15px}
+.hdr-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+h1{font-size:1.34rem;letter-spacing:-.018em;font-weight:700;margin:0;line-height:1.15}
+.sub{font-size:.82rem;color:var(--ink-3);margin-top:3px}
+.sync{display:flex;align-items:center;gap:7px;font-family:"IBM Plex Mono",monospace;font-size:.68rem;letter-spacing:.03em;color:var(--ink-3);border:1px solid var(--rule);padding:5px 10px;border-radius:20px;white-space:nowrap}
+.sync .led{width:7px;height:7px;border-radius:50%;background:var(--idle);flex:none}
+.sync.cloud .led{background:var(--go)}
+.sync.local .led{background:var(--warn)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(108px,1fr));gap:0;border-top:1px solid var(--rule)}
+.tile{padding:12px 14px 12px 0;border-right:1px solid var(--rule)}
+.tile:last-child{border-right:none}
+.tile-k{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);font-weight:600;font-family:Archivo,sans-serif}
+.tile-v{font-size:1.18rem;font-weight:600;margin:2px 0 0;display:block;line-height:1.2}
+.tile-v small{font-size:.7rem;color:var(--ink-3);font-weight:400}
+nav.tabs{display:flex;overflow-x:auto}
+nav.tabs button{background:none;border:none;border-bottom:2px solid transparent;color:var(--ink-3);font-size:.82rem;font-weight:600;padding:11px 14px;cursor:pointer;white-space:nowrap}
+nav.tabs button:hover{color:var(--ink)}
+nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:18px 0 13px}
+.bar .spacer{flex:1}
+input,select,textarea{font-size:.82rem;color:var(--ink);background:var(--surface);border:1px solid var(--rule-strong);padding:7px 9px;border-radius:3px;max-width:100%}
+textarea{width:100%;resize:vertical;min-height:58px;line-height:1.5}
+input::placeholder,textarea::placeholder{color:var(--ink-3)}
+button.btn{font-size:.78rem;font-weight:600;padding:7px 13px;border-radius:3px;cursor:pointer;background:var(--surface);color:var(--ink);border:1px solid var(--rule-strong)}
+button.btn:hover{background:var(--surface-2)}
+button.btn.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+button.btn.ghost{border-color:transparent;color:var(--ink-3)}
+button.btn.ghost:hover{color:var(--stop);background:var(--stop-bg)}
+
+.chip{display:inline-block;font-family:Archivo,sans-serif;font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;font-weight:600;padding:3px 7px;border-radius:2px;white-space:nowrap}
+.c-go{background:var(--go-bg);color:var(--go)}
+.c-warn{background:var(--warn-bg);color:var(--warn)}
+.c-stop{background:var(--stop-bg);color:var(--stop)}
+.c-idle{background:var(--idle-bg);color:var(--idle)}
+.c-acc{background:var(--accent-soft);color:var(--accent)}
+
+/* call affordance */
+.call{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:var(--on-accent);text-decoration:none;
+  font-family:Archivo,sans-serif;font-size:.78rem;font-weight:600;padding:8px 14px;border-radius:3px;white-space:nowrap}
+.call:hover{filter:brightness(1.08)}
+.call.sm{padding:5px 10px;font-size:.72rem}
+.call[aria-disabled="true"]{background:var(--surface-2);color:var(--ink-3);pointer-events:none}
+.tel{font-size:.74rem;color:var(--ink-2);display:block;margin-top:3px;word-break:break-all}
+
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:4px}
+.scroller{overflow-x:auto;border:1px solid var(--rule);background:var(--surface);border-radius:4px}
+table{border-collapse:collapse;width:100%;min-width:940px;font-size:.85rem}
+th{font-family:Archivo,sans-serif;font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600;color:var(--ink-3);text-align:left;padding:10px 12px;border-bottom:1px solid var(--rule-strong);background:var(--surface-2);white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+tr.open td{background:var(--surface-2)}
+td.n{font-size:.78rem;color:var(--ink-2);white-space:nowrap}
+td.nm{font-family:Archivo,sans-serif;font-weight:600;font-size:.87rem;min-width:180px;cursor:pointer}
+td.nm .a{display:block;font-family:"IBM Plex Mono",monospace;font-size:.7rem;color:var(--ink-3);font-weight:400;margin-top:2px}
+td.nm .flags{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
+tbody tr:last-child td{border-bottom:none}
+select.mini{font-size:.74rem;padding:4px 6px;max-width:148px}
+
+/* mobile cards */
+.cards{display:flex;flex-direction:column;gap:10px}
+.scard{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:14px}
+.scard.hi{border-color:var(--accent)}
+.scard h3{font-size:.98rem;margin:0;letter-spacing:-.005em}
+.scard .a{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-3);margin-top:2px}
+.scard .flags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.scard .meta{display:flex;gap:14px;margin-top:10px;font-family:"IBM Plex Mono",monospace;font-size:.74rem;color:var(--ink-2);flex-wrap:wrap}
+.scard .meta b{color:var(--ink-3);font-weight:500}
+.scard .acts{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.scard .picks{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.scard .picks select{flex:1;min-width:132px}
+.scard .body{margin-top:14px;padding-top:14px;border-top:1px solid var(--rule);display:flex;flex-direction:column;gap:12px}
+
+.detail{background:var(--surface-2);border-bottom:1px solid var(--rule)}
+.detail-in{padding:18px 14px 22px;display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:24px}
+@media (max-width:860px){.detail-in{grid-template-columns:1fr}}
+.qlist{display:flex;flex-direction:column;border:1px solid var(--rule);background:var(--surface);border-radius:4px}
+.q{padding:12px 13px;border-bottom:1px solid var(--rule);display:flex;flex-direction:column;gap:7px}
+.q:last-child{border-bottom:none}
+.q-h{display:flex;gap:9px;align-items:baseline}
+.q-n{font-family:"IBM Plex Mono",monospace;font-size:.67rem;font-weight:600;color:var(--ink-3);flex:none}
+.q-t{font-size:.86rem;line-height:1.45}
+.q-hint{font-size:.75rem;color:var(--ink-3);display:block;margin-top:3px;font-style:normal}
+.side{display:flex;flex-direction:column;gap:14px}
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld label{font-size:.63rem;text-transform:uppercase;letter-spacing:.09em;font-weight:600;color:var(--ink-3)}
+.fld input,.fld select{width:100%}
+
+.phase{margin-bottom:24px}
+.phase-h{display:flex;align-items:baseline;gap:12px;margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--rule)}
+.phase-when{font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:600;letter-spacing:.05em;color:var(--accent);text-transform:uppercase}
+.phase-c{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-3);margin-left:auto}
+.tasks{display:flex;flex-direction:column;border:1px solid var(--rule);background:var(--surface);border-radius:4px}
+.task{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;border-bottom:1px solid var(--rule);cursor:pointer}
+.task:last-child{border-bottom:none}
+.task:hover{background:var(--surface-2)}
+.task input{margin:3px 0 0;accent-color:var(--accent);width:16px;height:16px;flex:none;cursor:pointer}
+.task span{font-size:.89rem;line-height:1.45}
+.task.done span{color:var(--ink-3);text-decoration:line-through}
+
+.prose{max-width:66ch;display:flex;flex-direction:column;gap:15px;font-size:.96rem;line-height:1.62}
+.prose h3{font-size:1.01rem;margin:9px 0 0}
+.note{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--accent);padding:14px 16px;display:flex;flex-direction:column;gap:7px}
+.note.w{border-left-color:var(--warn)}
+.cfg{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));border:1px solid var(--rule);background:var(--surface);border-radius:4px}
+.cfg>div{padding:16px;border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:8px}
+.cfg>div:last-child{border-right:none}
+.cfg .pick{background:var(--accent-soft)}
+.lg{font-family:"IBM Plex Mono",monospace;font-size:.77rem;display:flex;flex-direction:column;gap:4px}
+.lg b{color:var(--ink-3);font-weight:500}
+.empty{padding:32px 18px;text-align:center;color:var(--ink-3);font-size:.89rem}
+.err{background:var(--stop-bg);color:var(--stop);border:1px solid var(--stop);padding:9px 13px;border-radius:3px;font-size:.8rem;margin:13px 0}
+.hint{font-size:.78rem;color:var(--ink-3);margin:10px 2px 0;line-height:1.5}
+@media (max-width:640px){.tile{border-right:none;border-bottom:1px solid var(--rule)}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script>
+(function(){
+"use strict";
+var h = React.createElement;
+var T = new Proxy({}, { get:function(_,tag){ return function(p){ return h(tag,p,Array.prototype.slice.call(arguments,1)); }; } });
+var useState = React.useState, useEffect = React.useEffect, useMemo = React.useMemo;
+
+/* ==========================================================
+   CATALOGUE — static reference content, not user state.
+   Phone numbers are from public directories: verify as you go.
+   ========================================================== */
+var SCHOOLS = [
+  {id:"vibgyor-rise", name:"VIBGYOR Rise", area:"Doddanekkundi", km:2, upto:"10 ?", fee:"1.14–1.65L", read:"go",
+   phone:"+91 96866 91166", email:"vi-doddanekkundi.support@vgos.org",
+   note:"Closest school to the office by a distance. Confirm whether this campus runs XI–XII."},
+  {id:"ekya-itpl", name:"Ekya School ITPL", area:"Doddanekkundi Extn", km:2.5, upto:"XII", fee:"1.8–2.4L", read:"warn",
+   phone:"080 4680 9096", email:"admissions@ekyaschools.com",
+   note:"Grade 1–12, strong academics, nearest good school to the office. The one real budget risk — at two children it likely breaks ₹5L on its own."},
+  {id:"narayana-marathahalli", name:"Narayana e-Techno", area:"Marathahalli", km:3, upto:"X", fee:"60–85k", telugu:true, read:"go",
+   phone:"+91 70222 93912", phone2:"+91 70222 81466",
+   note:"Best odds on the list for a Telugu answer, and cheap. Exam-drill culture; typically ends at X."},
+  {id:"sri-chaitanya", name:"Sri Chaitanya", area:"Marathahalli / Munnekolala", km:3, upto:"X", fee:"45–75k", telugu:true, read:"go",
+   phone:"+91 88610 04639", phone2:"+91 90717 66562",
+   note:"Same logic as Narayana. High pressure — weigh differently for Grade 5 than Grade 9."},
+  {id:"mtb-jjv", name:"MTB Jnana Jyothi Vidyanikethan", area:"Mahadevapura", km:3, upto:"?", fee:"?", read:"warn",
+   note:"Small local school, low fees. Number not found — check Class 9 seats and XI–XII before spending time."},
+  {id:"pragathi", name:"Pragathi School", area:"Mahadevapura", km:3, upto:"?", fee:"~70k–1.2L", read:"warn",
+   phone:"+91 93413 47534", phone2:"+91 89049 44991", email:"pragathischooladmission@gmail.com",
+   note:"Runs CBSE and state board, which sometimes means more language flexibility. Worth one call for that alone."},
+  {id:"nps-vibhuthipura", name:"NPS Vibhuthipura", area:"Vibhuthipura", km:3.5, upto:"growing", fee:"verify", read:"warn",
+   phone:"+91 63669 49138",
+   note:"Grade 8 only starts in 2026–27, so Grade 9 would be its first-ever cohort. Great brand, no results record here yet."},
+  {id:"rbgs-marathahalli", name:"Ravindra Bharathi Global", area:"Marathahalli", km:3.5, upto:"X", fee:"70–80k", telugu:true, read:"go",
+   phone:"+91 73537 77385", phone2:"+91 90363 60044",
+   note:"Hyderabad chain, so Telugu is plausible. Ends at X — a two-year stop for the elder child."},
+  {id:"brigade", name:"The Brigade School", area:"Mahadevapura / Whitefield", km:4, upto:"XII", fee:"~72k–1.2L", read:"go",
+   phone:"+91 63648 59376", email:"tbswadmission@brigadeschools.edu.in",
+   note:"Best structural fit found: runs to XII AND publicly lists seats in Grade 5, Grade 9 and Grade 12. Registration opened 3 September last year, so its 2027–28 window is opening about now."},
+  {id:"mvj", name:"MVJ International", area:"Marathahalli", km:4, upto:"?", fee:"~70k+", read:"go",
+   phone:"080 4302 4471", phone2:"+91 97420 00633", email:"contact@mvjinternationalschool.edu.in",
+   note:"Ranked #3 Whitefield-Plus CBSE and #15 Bengaluru, Times School Survey 2025–26. Best quality-per-rupee signal nearby."},
+  {id:"narayana-kundalahalli", name:"Narayana Co School", area:"Kundalahalli", km:4, upto:"X", fee:"~60–85k", telugu:true, read:"idle",
+   note:"Same chain, second campus. Ask Narayana centrally about Telugu, then pick whichever campus has a Grade 9 seat."},
+  {id:"vagdevi", name:"Vagdevi Vilas", area:"Marathahalli", km:4, upto:"X", fee:"~77k", read:"warn",
+   phone:"+91 80500 05851", phone2:"+91 96865 77189", email:"info@vvi.edu.in",
+   note:"Applications open at Ganesha Chaturthi each year — i.e. right now. Ends at X."},
+  {id:"genius-global", name:"Genius Global School", area:"Marathahalli", km:4, upto:"X", fee:"55k–1.06L", read:"stop",
+   note:"Nursery–10 only, so not for Grade 9. Still viable for the Grade 5 child if the language answer is good."},
+  {id:"janes", name:"Janes International", area:"Hoodi / Garudacharpalya", km:4.5, upto:"?", fee:"?", read:"warn",
+   note:"Could not confirm board, fees, grade range or number from any source. Get the basics before visiting."},
+  {id:"vrukksha", name:"The Vrukksha School", area:"Mahadevapura / Dooravani Nagar", km:5, upto:"?", fee:"~43–50k", read:"warn",
+   phone:"+91 96324 46699", phone2:"+91 96634 46699",
+   note:"Cheapest credible option in the ring. Newer school — ask directly about Class X results history."},
+  {id:"sm-english", name:"SM English School", area:"Hoodi", km:5, upto:"?", fee:"?", read:"warn",
+   note:"Society founded 1965; board affiliation not confirmable online. Confirm it is CBSE before anything else."},
+  {id:"gopalan-national", name:"Gopalan National School", area:"Mahadevapura", km:5, upto:"ICSE", fee:"—", read:"stop",
+   note:"ICSE, not CBSE. If you want the group, check Gopalan International at Hoodi instead — different board."},
+  {id:"shishya-beml", name:"Shishya BEML Public School", area:"Kaggadasapura", km:6, upto:"XII", fee:"1.08–1.18L", read:"go",
+   phone:"080 6452 0004", phone2:"080 2524 7242", email:"contact@shishyabemlschool.edu.in",
+   note:"Since 1994, CBSE to XII, sensible fees, established results. Kaggadasapura, not Whitefield."},
+  {id:"geethanjali", name:"Geethanjali Vidyalaya", area:"Kaggadasapura / CV Raman Nagar", km:6, upto:"XII", fee:"verify", read:"go",
+   phone:"080 2527 2357", phone2:"+91 99001 36176",
+   note:"25 years, 2.5-acre campus, ~1,100 students, Nursery–XII. Good size-to-attention ratio."},
+  {id:"narayana-kaggadasapura", name:"Narayana e-Techno", area:"Kaggadasapura", km:6, upto:"X", fee:"~60–85k", telugu:true, read:"idle",
+   note:"Third Narayana campus in range."},
+  {id:"narayana-krpuram", name:"Narayana e-Techno", area:"KR Puram", km:6, upto:"X", fee:"~60–85k", telugu:true, read:"idle",
+   note:"Fourth Narayana campus in range."},
+  {id:"amara-jyothi", name:"Amara Jyothi Public School", area:"KR Puram / Devasandra", km:6.5, upto:"XII", fee:"low", read:"go",
+   phone:"+91 63638 53388", phone2:"+91 83108 85066", email:"info@amarajyothipublicschool.edu.in",
+   note:"Since 1998, Pre-Nursery to XII, genuinely inexpensive. Strong value play if the bus route reaches you."},
+  {id:"orchids-cvrn", name:"Orchids The International", area:"CV Raman Nagar", km:6.5, upto:"X", fee:"1.19–2.3L", read:"stop",
+   note:"Nursery–10 only and near the top of the band. Kannada explicitly not a prerequisite here — worth a language call for Grade 5."},
+  {id:"euroschool", name:"EuroSchool", area:"Whitefield / Hoodi", km:7.5, upto:"XII", fee:"1.63–1.79L", read:"warn",
+   phone:"+91 70385 55555", email:"connect@euroschoolindia.com",
+   note:"Nursery–12, solid, and its site is already advertising 2027–28 admissions. Two children here plus transport lands right at the ₹5L ceiling."},
+  {id:"narayana-kasturinagar", name:"Narayana Olympiad", area:"Kasturi Nagar", km:8, upto:"X", fee:"~60–85k", telugu:true, read:"idle",
+   note:"Furthest Narayana. Only if it is the campus that says yes to Telugu."},
+  {id:"vishwa-vidyapeeth", name:"Vishwa Vidyapeeth", area:"Varthur", km:8.5, upto:"XII", fee:"verify", read:"warn",
+   phone:"+91 70220 09757", phone2:"+91 76762 27483", email:"enquiry@vishwavidyapeeth.edu.in",
+   note:"Multi-board campus to XII. Wrong side of Varthur traffic from Doddanekkundi at 8am."},
+  {id:"presidency-east", name:"Presidency School Bangalore East", area:"Kasturi Nagar", km:8.5, upto:"XII", fee:"verify", read:"warn",
+   phone:"+91 96208 12270", phone2:"080 4227 7351", email:"admission-psbe@presidency.edu.in",
+   note:"Runs to XII, placement test for all entrants. Registration historically opens 1 October."},
+  {id:"ppec", name:"Poornaprajna Education Centre", area:"Indiranagar", km:9.5, upto:"XII", fee:"verify", read:"stop",
+   note:"Good school, wrong geography. From Doddanekkundi this is a daily crawl down ORR in both peaks."},
+  {id:"new-pratham", name:"New Pratham Public School", area:"unconfirmed", km:99, upto:"?", fee:"?", read:"warn",
+   note:"Nothing reliable surfaced. Get the address off the site and check it against your rental zone before spending a visit."}
+];
+
+var QUESTIONS = [
+  {k:"q1", t:"Which languages do you offer as R1, R2 and R3 for Class IX under Circular Acad-33/2026?", hint:"If they don't know the circular, ask for the academic coordinator."},
+  {k:"q2", t:"Are you registered on OASIS to offer Telugu — subject code 007 or 089?", hint:"A yes/no fact about the school, not an opinion. This one settles everything."},
+  {k:"q3", t:"If Telugu isn't available as R2, will you take it as R3 with internal school-based assessment?", hint:"Point out there is no Class X board paper for R3 for this batch. Most likely ask to succeed."},
+  {k:"q4", t:"How do you handle a Class 9 lateral entrant from another state who has never studied Kannada?", hint:"Ask what they actually did for previous such students — not what the policy says."},
+  {k:"q5", t:"Is the combination locked at admission, and can it change before you upload Class IX registration to CBSE?", hint:"Get the deadline date. That is the real decision point."},
+  {k:"q6", t:"Do you run Classes XI and XII, and in which streams?", hint:"For the Grade 9 child this is close to disqualifying if the answer is no."},
+  {k:"q7", t:"Are there Class IX and Class V seats for 2027–28, is there an entrance test, and on what date?", hint:""},
+  {k:"q8", t:"Does your bus cover our rental zone? Pickup time and one-way ride time?", hint:"Ask for ride time, not distance. On ORR they are unrelated."},
+  {k:"q9", t:"What is the full annual outgo — tuition, admission, transport, books, uniform, building fee?", hint:"One number per child per year, in writing."}
+];
+
+var PHASES = [
+  {when:"September 2026 — now", tasks:[
+    ["s1","Call The Brigade School Mahadevapura — it lists Grade 5, 9 and 12 seats and its window opens about now"],
+    ["s2","Call Narayana e-Techno Marathahalli — lead with Q2 (OASIS code 007/089)"],
+    ["s3","Call Shishya BEML Kaggadasapura"],
+    ["s4","Ask Narayana / Sri Chaitanya head office about Telugu centrally, not campus by campus"],
+    ["s5","Check whether Vagdevi Vilas and EuroSchool 2027–28 applications have already opened"]]},
+  {when:"October 2026", tasks:[
+    ["o1","Presidency School East registration opens (historically 1 Oct)"],
+    ["o2","Submit applications to every school still in Shortlist"],
+    ["o3","Get any language accommodation confirmed BY EMAIL, not verbally"]]},
+  {when:"November – December 2026", tasks:[
+    ["n1","Entrance tests and parent interactions"],
+    ["n2","Cut the list to three"],
+    ["n3","Visit at 8am on a school day, not on a weekend tour"],
+    ["n4","Ride the actual bus route from the candidate rental zone"]]},
+  {when:"December 2026", tasks:[
+    ["d1","Check Blue Line / Doddanekkundi metro station status"],
+    ["d2","Lock the rental zone — after the school is decided, not before"]]},
+  {when:"January – February 2027", tasks:[
+    ["j1","Accept an offer and pay"],
+    ["j2","Request the Transfer Certificate from the current school — start early, this runs late for interstate moves"],
+    ["j3","Confirm the CBSE Class IX registration deadline (the date the language combination stops being changeable)"]]},
+  {when:"February – March 2027", tasks:[
+    ["f1","Sign the lease — 2 months deposit, 11-month term"],
+    ["f2","Register the agreement on Kaveri 2.0 (₹5,000 penalty if you skip it)"]]},
+  {when:"April – June 2027", tasks:[
+    ["a1","Confirm whether the session starts in April or June — it moves the whole move date"],
+    ["a2","Move"]]}
+];
+
+var ZONES = [
+  {v:"A", l:"A · Doddanekkundi / Marathahalli", km:"0–3 km", two:"₹25–38k", three:"₹45k+"},
+  {v:"B", l:"B · Kaggadasapura / CV Raman Nagar", km:"5–7 km", two:"₹26–41k", three:"₹45k+"},
+  {v:"C", l:"C · Mahadevapura / Hoodi", km:"3–5 km", two:"₹27–35k", three:"₹30–60k"},
+  {v:"D", l:"D · Kadugodi / Varthur / Panathur", km:"8–12 km", two:"₹22–30k", three:"₹35–60k"}
+];
+
+var STATUS = [
+  {v:"none", l:"Not started", c:"c-idle"},
+  {v:"queued", l:"To call", c:"c-acc"},
+  {v:"called", l:"Called", c:"c-warn"},
+  {v:"shortlist", l:"Shortlist", c:"c-go"},
+  {v:"reject", l:"Rejected", c:"c-stop"}
+];
+var TELUGU = [
+  {v:"unknown", l:"Telugu: unknown", c:"c-idle"},
+  {v:"r2", l:"Telugu as R2", c:"c-go"},
+  {v:"r3", l:"Telugu as R3", c:"c-go"},
+  {v:"maybe", l:"Telugu: will consider", c:"c-warn"},
+  {v:"no", l:"Telugu: no", c:"c-stop"}
+];
+var RSTATUS = [
+  {v:"lead", l:"Lead", c:"c-idle"},
+  {v:"contacted", l:"Contacted", c:"c-acc"},
+  {v:"seen", l:"Viewed", c:"c-warn"},
+  {v:"shortlist", l:"Shortlist", c:"c-go"},
+  {v:"reject", l:"Rejected", c:"c-stop"}
+];
+function look(list,v){ for(var i=0;i<list.length;i++) if(list[i].v===v) return list[i]; return list[0]; }
+function telHref(n){ return "tel:" + String(n||"").replace(/[^\d+]/g,""); }
+
+/* ==========================================================
+   STORE — db when hosted as an Artifact, localStorage elsewhere.
+   ========================================================== */
+var COLS = ["schools","rentals","tasks"];
+var LS_KEY = "ddk-tracker-v1";
+
+var store = (function(){
+  var api=null, mode="loading", err=null;
+  var cache = {schools:{}, rentals:{}, tasks:{}};
+  var subs = [];
+  function notify(){ for(var i=0;i<subs.length;i++) subs[i](); }
+  function saveLocal(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(cache)); }catch(e){} }
+  function loadLocal(){
+    try{
+      var raw = JSON.parse(localStorage.getItem(LS_KEY)||"{}");
+      COLS.forEach(function(c){ cache[c] = (raw && raw[c]) || {}; });
+    }catch(e){}
+  }
+  function init(){
+    var p=null;
+    try{ if (window.claude && typeof window.claude.use === "function") p = window.claude.use("db"); }catch(e){ p=null; }
+    if (!p || typeof p.then !== "function"){ mode="local"; loadLocal(); notify(); return; }
+    p.then(function(cap){
+      if(!cap){ mode="local"; loadLocal(); notify(); return; }
+      api=cap; mode="cloud";
+      COLS.forEach(function(col){
+        try{
+          api.collection(col).onSnapshot(function(snap){
+            var next={};
+            snap.docs.forEach(function(d){ if(d.exists) next[d.id]=d.data(); });
+            cache[col]=next; notify();
+          }, function(e){
+            err = (e&&e.code)==="revoked"
+              ? "Your access to the saved data was withdrawn while the page was open. Reload to try again."
+              : "Live sync stopped ("+((e&&e.code)||"unknown")+"). Your edits may not be saving — reload the page.";
+            notify();
+          });
+        }catch(e){}
+      });
+      notify();
+    }, function(){ mode="local"; loadLocal(); notify(); });
+  }
+  init();
+  return {
+    subscribe:function(fn){ subs.push(fn); return function(){ subs = subs.filter(function(f){return f!==fn;}); }; },
+    mode:function(){ return mode; },
+    error:function(){ return err; },
+    all:function(col){ return cache[col]||{}; },
+    get:function(col,id){ return (cache[col]||{})[id]||null; },
+    put:function(col,id,patch){
+      var cur=(cache[col]||{})[id]||{};
+      var next=Object.assign({},cur,patch,{updatedAt:new Date().toISOString()});
+      cache[col][id]=next; notify();
+      if(mode==="cloud"&&api){
+        api.doc(col+"/"+id).set(next).catch(function(e){
+          err = (e&&e.code)==="quota_exceeded"
+            ? "The saved store is full — delete some rental entries before adding more."
+            : "That change did not save ("+((e&&e.code)||"unknown")+"). Try again.";
+          notify();
+        });
+      } else saveLocal();
+    },
+    remove:function(col,id){
+      delete cache[col][id]; notify();
+      if(mode==="cloud"&&api){ api.doc(col+"/"+id).delete().catch(function(){}); }
+      else saveLocal();
+    },
+    newId:function(){ return "r"+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+  };
+})();
+
+function useStore(){
+  var s=useState(0), tick=s[1];
+  useEffect(function(){ return store.subscribe(function(){ tick(function(v){return v+1;}); }); },[]);
+  return store;
+}
+function useNarrow(){
+  var q = "(max-width: 760px)";
+  var s = useState(typeof window.matchMedia === "function" ? window.matchMedia(q).matches : false);
+  var v = s[0], set = s[1];
+  useEffect(function(){
+    if (typeof window.matchMedia !== "function") return;
+    var m = window.matchMedia(q), fn = function(e){ set(e.matches); };
+    if (m.addEventListener) m.addEventListener("change", fn); else m.addListener(fn);
+    return function(){ if (m.removeEventListener) m.removeEventListener("change", fn); else m.removeListener(fn); };
+  },[]);
+  return v;
+}
+function Field(props){
+  var st=useState(props.value||""), val=st[0], set=st[1];
+  useEffect(function(){ set(props.value||""); },[props.value, props.rowKey]);
+  var common = {
+    value: val,
+    placeholder: props.placeholder||"",
+    onChange:function(e){ set(e.target.value); },
+    onBlur:function(){ if((props.value||"") !== val) props.onCommit(val); }
+  };
+  return props.area ? T.textarea(common) : T.input(Object.assign({type:"text"}, common));
+}
+function CallBtn(props){
+  var num = props.number;
+  if (!num) return T.span({className:"call sm", "aria-disabled":"true"}, "No number");
+  return T.a({className:"call" + (props.small ? " sm" : ""), href:telHref(num)}, "Call");
+}
+
+/* ==========================================================
+   SCHOOLS
+   ========================================================== */
+function QuestionList(props){
+  var s = props.s, sc = props.sc, rec = props.rec;
+  return T.div({className:"qlist"}, QUESTIONS.map(function(q){
+    return T.div({className:"q", key:q.k},
+      T.div({className:"q-h"},
+        T.span({className:"q-n"}, q.k.toUpperCase()),
+        T.span({className:"q-t"}, q.t, q.hint ? T.em({className:"q-hint"}, q.hint) : null)),
+      h(Field, {rowKey:sc.id, area:true, value:rec[q.k]||"", placeholder:"Their answer…",
+        onCommit:function(v){ var p={}; p[q.k]=v; s.put("schools", sc.id, p); }}));
+  }));
+}
+function SideFields(props){
+  var s=props.s, sc=props.sc, rec=props.rec;
+  return T.div({className:"side"},
+    T.p({style:{fontSize:".87rem", color:"var(--ink-2)"}}, sc.note),
+    sc.email ? T.p({style:{fontSize:".78rem"}}, T.a({href:"mailto:"+sc.email}, sc.email)) : null,
+    T.div({className:"fld"}, T.label(null,"Phone (edit if wrong)"),
+      h(Field,{rowKey:sc.id, value:rec.phone||"", placeholder:sc.phone||"not found — add it",
+        onCommit:function(v){ s.put("schools",sc.id,{phone:v}); }})),
+    T.div({className:"fld"}, T.label(null,"Confirmed annual fee"),
+      h(Field,{rowKey:sc.id, value:rec.fee||"", placeholder:sc.fee,
+        onCommit:function(v){ s.put("schools",sc.id,{fee:v}); }})),
+    T.div({className:"fld"}, T.label(null,"Who you spoke to"),
+      h(Field,{rowKey:sc.id, value:rec.contact||"", placeholder:"Name, extension, email",
+        onCommit:function(v){ s.put("schools",sc.id,{contact:v}); }})),
+    T.div({className:"fld"}, T.label(null,"Called on"),
+      T.input({type:"date", value:rec.calledOn||"",
+        onChange:function(e){ s.put("schools",sc.id,{calledOn:e.target.value}); }})),
+    T.div({className:"fld"}, T.label(null,"Notes"),
+      h(Field,{rowKey:sc.id, area:true, value:rec.notes||"", placeholder:"Anything else worth remembering",
+        onCommit:function(v){ s.put("schools",sc.id,{notes:v}); }})));
+}
+
+function SchoolsView(){
+  var s=useStore(), narrow=useNarrow();
+  var f=useState({q:"", status:"all", telugu:"all", senior:false, near:false, phoned:false}), filt=f[0], setFilt=f[1];
+  var o=useState(null), open=o[0], setOpen=o[1];
+  function up(k,v){ var x={}; x[k]=v; setFilt(Object.assign({},filt,x)); }
+
+  var rows = useMemo(function(){
+    return SCHOOLS.filter(function(sc){
+      var rec = s.get("schools", sc.id) || {};
+      if (filt.q && (sc.name+" "+sc.area).toLowerCase().indexOf(filt.q.toLowerCase()) < 0) return false;
+      if (filt.status !== "all" && (rec.status||"none") !== filt.status) return false;
+      if (filt.telugu !== "all" && (rec.telugu||"unknown") !== filt.telugu) return false;
+      if (filt.senior && sc.upto !== "XII") return false;
+      if (filt.near && sc.km > 5) return false;
+      if (filt.phoned && !(rec.phone || sc.phone)) return false;
+      return true;
+    });
+  }, [filt, s.all("schools")]);
+
+  var controls = T.div({className:"bar"},
+    T.input({type:"search", placeholder:"Search school or area…", value:filt.q, style:{minWidth:"170px",flex:narrow?"1 1 100%":"none"},
+      onChange:function(e){ up("q", e.target.value); }}),
+    T.select({value:filt.status, onChange:function(e){ up("status", e.target.value); }},
+      T.option({value:"all"},"All statuses"),
+      STATUS.map(function(x){ return T.option({key:x.v,value:x.v},x.l); })),
+    T.select({value:filt.telugu, onChange:function(e){ up("telugu", e.target.value); }},
+      T.option({value:"all"},"Any Telugu answer"),
+      TELUGU.map(function(x){ return T.option({key:x.v,value:x.v},x.l); })),
+    T.button({className:"btn"+(filt.senior?" primary":""), onClick:function(){ up("senior",!filt.senior); }},"Runs to XII"),
+    T.button({className:"btn"+(filt.near?" primary":""), onClick:function(){ up("near",!filt.near); }},"Within 5 km"),
+    T.button({className:"btn"+(filt.phoned?" primary":""), onClick:function(){ up("phoned",!filt.phoned); }},"Has a number"),
+    T.div({className:"spacer"}),
+    T.span({className:"ui", style:{fontSize:".76rem",color:"var(--ink-3)"}}, rows.length+" of "+SCHOOLS.length));
+
+  if (narrow){
+    return T.div(null, controls,
+      T.div({className:"cards"}, rows.length===0
+        ? T.div({className:"card"}, T.div({className:"empty"},"No school matches those filters."))
+        : rows.map(function(sc){
+            var rec = s.get("schools", sc.id)||{};
+            var num = rec.phone || sc.phone;
+            var isOpen = open===sc.id;
+            var answered = QUESTIONS.filter(function(q){ return (rec[q.k]||"").trim(); }).length;
+            return T.div({className:"scard"+(isOpen?" hi":""), key:sc.id},
+              T.h3(null, sc.name),
+              T.div({className:"a"}, sc.area),
+              T.div({className:"flags"},
+                T.span({className:"chip c-"+sc.read}, sc.read==="go"?"Shortlist":sc.read==="warn"?"Verify":sc.read==="stop"?"Drop":"Backup"),
+                sc.telugu ? T.span({className:"chip c-acc"},"Telugu-origin chain") : null,
+                answered>0 ? T.span({className:"chip c-idle"}, answered+"/9 answered") : null),
+              T.div({className:"meta"},
+                T.span(null, T.b(null,"km "), sc.km===99?"?":"~"+sc.km),
+                T.span(null, T.b(null,"to "), sc.upto),
+                T.span(null, T.b(null,"₹ "), rec.fee||sc.fee)),
+              T.div({className:"acts"},
+                h(CallBtn,{number:num}),
+                T.button({className:"btn", onClick:function(){ setOpen(isOpen?null:sc.id); }}, isOpen?"Close":"Open call sheet"),
+                num ? T.span({className:"tel"}, num) : null),
+              T.div({className:"picks"},
+                T.select({value:rec.status||"none","aria-label":"Status for "+sc.name,
+                  onChange:function(e){ s.put("schools",sc.id,{status:e.target.value}); }},
+                  STATUS.map(function(x){ return T.option({key:x.v,value:x.v},x.l); })),
+                T.select({value:rec.telugu||"unknown","aria-label":"Telugu answer for "+sc.name,
+                  onChange:function(e){ s.put("schools",sc.id,{telugu:e.target.value}); }},
+                  TELUGU.map(function(x){ return T.option({key:x.v,value:x.v},x.l); }))),
+              isOpen ? T.div({className:"body"},
+                h(QuestionList,{s:s, sc:sc, rec:rec}),
+                h(SideFields,{s:s, sc:sc, rec:rec})) : null);
+          })),
+      T.p({className:"hint"}, "Numbers came from public directories, not the schools — correct them in the call sheet as you go."));
+  }
+
+  return T.div(null, controls,
+    T.div({className:"scroller"}, T.table(null,
+      T.thead(null, T.tr(null,
+        T.th(null,"School"), T.th(null,"Call"), T.th(null,"~km"), T.th(null,"To"),
+        T.th(null,"Indicative ₹/yr"), T.th(null,"Status"), T.th(null,"Telugu"), T.th(null,"Read"))),
+      T.tbody(null, rows.length===0
+        ? T.tr(null, T.td({colSpan:8}, T.div({className:"empty"},"No school matches those filters.")))
+        : rows.map(function(sc){
+            var rec = s.get("schools", sc.id)||{};
+            var num = rec.phone || sc.phone;
+            var isOpen = open===sc.id;
+            var answered = QUESTIONS.filter(function(q){ return (rec[q.k]||"").trim(); }).length;
+            return [
+              T.tr({key:sc.id, className:isOpen?"open":""},
+                T.td({className:"nm", onClick:function(){ setOpen(isOpen?null:sc.id); }},
+                  sc.name, T.span({className:"a"}, sc.area),
+                  T.span({className:"flags"},
+                    sc.telugu ? T.span({className:"chip c-acc"},"Telugu-origin chain") : null,
+                    answered>0 ? T.span({className:"chip c-idle"}, answered+"/9 answered") : null)),
+                T.td(null, h(CallBtn,{number:num, small:true}), num?T.span({className:"tel"},num):null),
+                T.td({className:"n"}, sc.km===99?"?":"~"+sc.km),
+                T.td({className:"n"}, sc.upto),
+                T.td({className:"n"}, rec.fee||sc.fee),
+                T.td(null, T.select({className:"mini", value:rec.status||"none","aria-label":"Status for "+sc.name,
+                  onChange:function(e){ s.put("schools",sc.id,{status:e.target.value}); }},
+                  STATUS.map(function(x){ return T.option({key:x.v,value:x.v},x.l); }))),
+                T.td(null, T.select({className:"mini", value:rec.telugu||"unknown","aria-label":"Telugu answer for "+sc.name,
+                  onChange:function(e){ s.put("schools",sc.id,{telugu:e.target.value}); }},
+                  TELUGU.map(function(x){ return T.option({key:x.v,value:x.v},x.l); }))),
+                T.td(null, T.span({className:"chip c-"+sc.read},
+                  sc.read==="go"?"Shortlist":sc.read==="warn"?"Verify":sc.read==="stop"?"Drop":"Backup"))),
+              isOpen ? T.tr({key:sc.id+"-d"}, T.td({colSpan:8, style:{padding:0}},
+                T.div({className:"detail"}, T.div({className:"detail-in"},
+                  T.div(null, T.h3({style:{margin:"0 0 10px"}},"The nine questions"), h(QuestionList,{s:s,sc:sc,rec:rec})),
+                  h(SideFields,{s:s, sc:sc, rec:rec}))))) : null
+            ];
+          })))),
+    T.p({className:"hint"}, "Numbers came from public directories, not the schools — correct them in the call sheet as you go. Twelve schools had no number I could find; add them when you have one."));
+}
+
+/* ==========================================================
+   RENTALS
+   ========================================================== */
+function RentalsView(){
+  var s=useStore(), narrow=useNarrow();
+  var all=s.all("rentals");
+  var ids=Object.keys(all).sort(function(a,b){ return (all[b].createdAt||"").localeCompare(all[a].createdAt||""); });
+  function add(){
+    s.put("rentals", s.newId(), {name:"", zone:"C", bhk:"2", rent:"", deposit:"", link:"", phone:"", status:"lead", notes:"", createdAt:new Date().toISOString()});
+  }
+  var head = T.div({className:"bar"},
+    T.button({className:"btn primary", onClick:add}, "+ Add a place"),
+    T.div({className:"spacer"}),
+    T.span({className:"ui", style:{fontSize:".76rem",color:"var(--ink-3)"}},
+      ids.length+" tracked · "+ids.filter(function(i){return all[i].status==="shortlist";}).length+" shortlisted"));
+
+  if (ids.length===0){
+    return T.div(null, head, T.div({className:"card"}, T.div({className:"empty"},
+      T.p(null,"Nothing tracked yet."),
+      T.p({style:{marginTop:"8px"}},"Add places as you find them. Zone C — Mahadevapura and Hoodi — is where ₹30–35k goes furthest."))));
+  }
+
+  if (narrow){
+    return T.div(null, head, T.div({className:"cards"}, ids.map(function(id){
+      var r=all[id];
+      return T.div({className:"scard", key:id},
+        h(Field,{rowKey:id, value:r.name||"", placeholder:"Society / address",
+          onCommit:function(v){ s.put("rentals",id,{name:v}); }}),
+        T.div({className:"picks"},
+          T.select({value:r.zone||"C","aria-label":"Zone", onChange:function(e){ s.put("rentals",id,{zone:e.target.value}); }},
+            ZONES.map(function(z){ return T.option({key:z.v,value:z.v}, "Zone "+z.v+" · "+z.km); })),
+          T.select({value:r.bhk||"2","aria-label":"BHK", onChange:function(e){ s.put("rentals",id,{bhk:e.target.value}); }},
+            ["1","2","3","4"].map(function(b){ return T.option({key:b,value:b}, b+" BHK"); })),
+          T.select({value:r.status||"lead","aria-label":"Status", onChange:function(e){ s.put("rentals",id,{status:e.target.value}); }},
+            RSTATUS.map(function(x){ return T.option({key:x.v,value:x.v},x.l); }))),
+        T.div({className:"picks"},
+          h(Field,{rowKey:id, value:r.rent||"", placeholder:"rent + maint",
+            onCommit:function(v){ s.put("rentals",id,{rent:v}); }}),
+          h(Field,{rowKey:id, value:r.deposit||"", placeholder:"deposit (months)",
+            onCommit:function(v){ s.put("rentals",id,{deposit:v}); }})),
+        T.div({className:"picks"},
+          h(Field,{rowKey:id, value:r.phone||"", placeholder:"owner / broker number",
+            onCommit:function(v){ s.put("rentals",id,{phone:v}); }})),
+        T.div({className:"acts"},
+          h(CallBtn,{number:r.phone, small:true}),
+          r.link ? T.a({href:r.link, target:"_blank", rel:"noopener noreferrer", className:"btn", style:{textDecoration:"none"}}, "Listing ↗") : null,
+          T.button({className:"btn ghost", onClick:function(){ s.remove("rentals",id); }},"Remove")),
+        T.div({style:{marginTop:"10px"}},
+          h(Field,{rowKey:id, value:r.link||"", placeholder:"listing URL",
+            onCommit:function(v){ s.put("rentals",id,{link:v}); }})),
+        T.div({style:{marginTop:"10px"}},
+          h(Field,{rowKey:id, area:true, value:r.notes||"", placeholder:"Floor, light, water, landlord…",
+            onCommit:function(v){ s.put("rentals",id,{notes:v}); }})));
+    })));
+  }
+
+  return T.div(null, head, T.div({className:"scroller"}, T.table(null,
+    T.thead(null, T.tr(null,
+      T.th(null,"Place"), T.th(null,"Zone"), T.th(null,"BHK"), T.th(null,"Rent + maint"),
+      T.th(null,"Deposit"), T.th(null,"Contact"), T.th(null,"Status"), T.th(null,"Notes"), T.th(null,""))),
+    T.tbody(null, ids.map(function(id){
+      var r=all[id];
+      return T.tr({key:id},
+        T.td({className:"nm"},
+          h(Field,{rowKey:id, value:r.name||"", placeholder:"Society / address",
+            onCommit:function(v){ s.put("rentals",id,{name:v}); }}),
+          r.link ? T.span({className:"a"}, T.a({href:r.link, target:"_blank", rel:"noopener noreferrer"},"listing ↗")) : null,
+          T.span({className:"a"}, h(Field,{rowKey:id, value:r.link||"", placeholder:"listing URL",
+            onCommit:function(v){ s.put("rentals",id,{link:v}); }}))),
+        T.td(null, T.select({className:"mini", value:r.zone||"C","aria-label":"Zone",
+          onChange:function(e){ s.put("rentals",id,{zone:e.target.value}); }},
+          ZONES.map(function(z){ return T.option({key:z.v,value:z.v}, z.v+" · "+z.km); }))),
+        T.td(null, T.select({className:"mini", value:r.bhk||"2","aria-label":"BHK",
+          onChange:function(e){ s.put("rentals",id,{bhk:e.target.value}); }},
+          ["1","2","3","4"].map(function(b){ return T.option({key:b,value:b}, b+" BHK"); }))),
+        T.td(null, h(Field,{rowKey:id, value:r.rent||"", placeholder:"28000 + 2500",
+          onCommit:function(v){ s.put("rentals",id,{rent:v}); }})),
+        T.td(null, h(Field,{rowKey:id, value:r.deposit||"", placeholder:"months",
+          onCommit:function(v){ s.put("rentals",id,{deposit:v}); }})),
+        T.td(null, h(Field,{rowKey:id, value:r.phone||"", placeholder:"number",
+          onCommit:function(v){ s.put("rentals",id,{phone:v}); }}),
+          r.phone ? T.div({style:{marginTop:"5px"}}, h(CallBtn,{number:r.phone, small:true})) : null),
+        T.td(null, T.select({className:"mini", value:r.status||"lead","aria-label":"Status",
+          onChange:function(e){ s.put("rentals",id,{status:e.target.value}); }},
+          RSTATUS.map(function(x){ return T.option({key:x.v,value:x.v},x.l); }))),
+        T.td({style:{minWidth:"190px"}}, h(Field,{rowKey:id, area:true, value:r.notes||"", placeholder:"Floor, light, water, landlord…",
+          onCommit:function(v){ s.put("rentals",id,{notes:v}); }})),
+        T.td(null, T.button({className:"btn ghost", onClick:function(){ s.remove("rentals",id); }},"Remove")));
+    })))));
+}
+
+/* ==========================================================
+   TIMELINE + BRIEF
+   ========================================================== */
+function TimelineView(){
+  var s=useStore(), done=s.all("tasks");
+  return T.div({style:{marginTop:"20px"}}, PHASES.map(function(p,i){
+    var n=p.tasks.filter(function(t){ return done[t[0]] && done[t[0]].done; }).length;
+    return T.div({className:"phase", key:i},
+      T.div({className:"phase-h"},
+        T.span({className:"phase-when"}, p.when),
+        T.span({className:"phase-c"}, n+" / "+p.tasks.length)),
+      T.div({className:"tasks"}, p.tasks.map(function(t){
+        var isDone = !!(done[t[0]] && done[t[0]].done);
+        return T.label({className:"task"+(isDone?" done":""), key:t[0]},
+          T.input({type:"checkbox", checked:isDone, onChange:function(){ s.put("tasks",t[0],{done:!isDone}); }}),
+          T.span(null, t[1]));
+      })));
+  }));
+}
+
+function BriefView(){
+  return T.div({className:"prose", style:{marginTop:"20px"}},
+    T.h3(null,"The two rules that decide this"),
+    T.div({className:"note"},
+      T.strong(null,"CBSE requires three languages in Classes 9–10."),
+      T.p(null,"Circular Acad-33/2026, effective 1 July 2026, makes R1, R2 and R3 compulsory from Class IX, at least two being native Indian languages. Only R1 and R2 are board-examined in Class X; R3 is assessed internally by the school and still appears on the CBSE certificate.")),
+    T.div({className:"note w"},
+      T.strong(null,"Karnataka requires Kannada as first or second language."),
+      T.p(null,"Under the Kannada Language Learning Act 2015 and the NOC rules enforced from 2024–25, CBSE and ICSE schools must teach Kannada as first or second language — not third — for Classes 1 to 10. A 2023 PIL against this is still pending in the Karnataka High Court.")),
+    T.p(null,"Telugu is not the obstacle at the board: CBSE runs full Class 9–10 syllabi and papers under codes 007 (Andhra Pradesh) and 089 (Telangana). The obstacle is that almost no private school in Bengaluru staffs it. But because R3 carries no board paper for your elder child's batch, a school that would never staff Telugu as an examined subject can plausibly accept it as R3. That is the door to push on."),
+
+    T.h3(null,"Three combinations for Grade 9, in the order to ask"),
+    T.div({className:"cfg"},
+      T.div({className:"pick"},
+        T.span({className:"chip c-go"},"Ask first"),
+        T.strong(null,"English · Hindi · Telugu"),
+        T.div({className:"lg"}, T.div(null,T.b(null,"R1 "),"English — board"), T.div(null,T.b(null,"R2 "),"Hindi — board"), T.div(null,T.b(null,"R3 "),"Telugu — internal")),
+        T.p({style:{fontSize:".85rem"}},"Hindi is already their third language, so the board subject is one they have a base in, and Telugu costs the school almost nothing. Drops Kannada, which is what the state asks for — some schools refuse on that ground alone.")),
+      T.div(null,
+        T.span({className:"chip c-warn"},"Ask second"),
+        T.strong(null,"English · Telugu · Kannada"),
+        T.div({className:"lg"}, T.div(null,T.b(null,"R1 "),"English — board"), T.div(null,T.b(null,"R2 "),"Telugu 007/089 — board"), T.div(null,T.b(null,"R3 "),"Kannada — internal")),
+        T.p({style:{fontSize:".85rem"}},"A native speaker banks a near-full score in a board language, worth real percentage points on a five-subject aggregate. Needs the school already registered on OASIS for 007 or 089 — realistically only the Telugu-origin chains.")),
+      T.div(null,
+        T.span({className:"chip c-stop"},"Fallback"),
+        T.strong(null,"English · Kannada · Telugu"),
+        T.div({className:"lg"}, T.div(null,T.b(null,"R1 "),"English — board"), T.div(null,T.b(null,"R2 "),"Kannada — board"), T.div(null,T.b(null,"R3 "),"Telugu or Hindi — internal")),
+        T.p({style:{fontSize:".85rem"}},"Fully compliant, every school can say yes. But your child starts Kannada from zero in Class 9 and sits a board paper in it eighteen months later — a live threat to the Class X aggregate."))),
+    T.div({className:"note"},
+      T.strong(null,"The relief to cite by name"),
+      T.p(null,"Karnataka's own framing provides that a student who took a particular language combination at the middle stage may continue it on reaching Class 9. Your elder child is finishing Grade 8 on Telugu and Hindi right now — exactly the case the relief contemplates. Raise it explicitly.")),
+
+    T.h3(null,"The two children need different answers"),
+    T.p(null, T.strong(null,"Grade 9 — board in 2029. "),"The first Class X board exam in R3 is for the cohort entering Class 6 in 2026–27, so R3 stays school-assessed for your elder child. Fight for Hindi or Telugu at R2; treat R3 as free."),
+    T.p(null, T.strong(null,"Grade 5 — board in 2032–33. "),"Kannada is mandatory to Class 8, so this child will do it — and with five years before anything is graded, that is genuinely learnable. Less obvious: by 2032–33 R3 IS a board subject, so getting Telugu into R3 from Class 6 turns the third language into the easiest paper on their sheet."),
+
+    T.h3(null,"Housing, in one paragraph"),
+    T.p(null,"₹30–35k all-in does not get a 3BHK in a gated community anywhere in this corridor — those run ₹50–60k. It does reliably get a 2BHK, either in an older society or as an independent builder floor. Zone B builder floors sit at ₹26–27k, inside your preferred number rather than your stretch, so you probably do not need to settle for a 1BHK."),
+    T.div({className:"scroller"}, T.table({style:{minWidth:"540px"}},
+      T.thead(null, T.tr(null, T.th(null,"Zone"), T.th(null,"To office"), T.th(null,"2BHK"), T.th(null,"3BHK"))),
+      T.tbody(null, ZONES.map(function(z){
+        return T.tr({key:z.v}, T.td({className:"nm"},z.l), T.td({className:"n"},z.km), T.td({className:"n"},z.two), T.td({className:"n"},z.three));
+      })))),
+    T.div({className:"note"},
+      T.strong(null,"Two things that save real money"),
+      T.p(null,"The Karnataka Rent (Amendment) Act 2025, gazetted 8 January 2026, caps residential security deposits at two months' rent. Bengaluru's 10-month convention is no longer enforceable — at ₹32,000 rent that is ₹64,000, not ₹3.2 lakh. Brokers will still quote ten. Register the agreement on Kaveri 2.0; skipping it carries a ₹5,000 penalty."),
+      T.p(null,"The Blue Line along ORR, with a station at Doddanekkundi, is targeted for December 2026 after slipping from June. Assume further slippage, but take an 11-month lease near Doddanekkundi, Kundalahalli or Mahadevapura station so you are already inside the pocket if it opens.")),
+
+    T.h3(null,"What is not verified"),
+    T.p({style:{fontSize:".89rem", color:"var(--ink-2)"}},"Every fee figure is indicative, compiled from school-listing aggregators that mix one-time and recurring charges — a sorting aid, not a quote. Distances are estimates from area centroids. Phone numbers came from public directories rather than the schools themselves. And no source anywhere confirms that any specific school will offer Telugu in any slot: the Telugu-origin chain angle is an inference from their founding, not a fact. Question 2 is what settles it.")
+  );
+}
+
+/* ==========================================================
+   SHELL
+   ========================================================== */
+function App(){
+  var s=useStore();
+  var t=useState("schools"), tab=t[0], setTab=t[1];
+  var mode=s.mode(), err=s.error();
+  var recs=s.all("schools");
+
+  var counts = useMemo(function(){
+    var called=0, shortlist=0, tel=0;
+    SCHOOLS.forEach(function(sc){
+      var r=recs[sc.id]; if(!r) return;
+      if(r.status==="called"||r.status==="shortlist"||r.status==="reject") called++;
+      if(r.status==="shortlist") shortlist++;
+      if(r.telugu==="r2"||r.telugu==="r3") tel++;
+    });
+    return {called:called, shortlist:shortlist, tel:tel};
+  },[recs]);
+
+  var rentals=s.all("rentals");
+  var rShort=Object.keys(rentals).filter(function(i){return rentals[i].status==="shortlist";}).length;
+  var tasks=s.all("tasks");
+  var totalTasks=PHASES.reduce(function(a,p){return a+p.tasks.length;},0);
+  var doneTasks=Object.keys(tasks).filter(function(k){return tasks[k].done;}).length;
+  var days=Math.max(0, Math.ceil((new Date(2027,1,28) - new Date())/86400000));
+
+  var TABS=[["schools","Schools"],["rentals","Rentals"],["timeline","Timeline"],["brief","The brief"]];
+
+  return T.div(null,
+    T.header({className:"hdr"}, T.div({className:"hdr-in"},
+      T.div({className:"hdr-top"},
+        T.div(null,
+          T.h1(null,"Doddanekkundi Tracker"),
+          T.p({className:"sub"},"Grade 9 and Grade 5 into east Bengaluru, AY 2027–28 · IndiQube ETA, ORR")),
+        T.div({className:"sync "+(mode==="cloud"?"cloud":mode==="local"?"local":"")},
+          T.span({className:"led"}),
+          mode==="cloud"?"Synced across your devices":mode==="local"?"Saved in this browser only":"Connecting…")),
+      T.dl({className:"tiles"},
+        T.div({className:"tile"}, T.dt({className:"tile-k"},"Schools"), T.dd({className:"tile-v"}, SCHOOLS.length)),
+        T.div({className:"tile"}, T.dt({className:"tile-k"},"Contacted"), T.dd({className:"tile-v"}, counts.called, T.small(null," / "+SCHOOLS.length))),
+        T.div({className:"tile"}, T.dt({className:"tile-k"},"Shortlisted"), T.dd({className:"tile-v", style:{color:counts.shortlist?"var(--go)":"inherit"}}, counts.shortlist)),
+        T.div({className:"tile"}, T.dt({className:"tile-k"},"Telugu: yes"), T.dd({className:"tile-v", style:{color:counts.tel?"var(--go)":"inherit"}}, counts.tel)),
+        T.div({className:"tile"}, T.dt({className:"tile-k"},"Places"), T.dd({className:"tile-v"}, Object.keys(rentals).length, T.small(null," · "+rShort+" short"))),
+        T.div({className:"tile"}, T.dt({className:"tile-k"},"Steps done"), T.dd({className:"tile-v"}, doneTasks, T.small(null," / "+totalTasks))),
+        T.div({className:"tile"}, T.dt({className:"tile-k"},"Days left"), T.dd({className:"tile-v"}, days, T.small(null," to Feb 27")))),
+      h("nav",{className:"tabs", role:"tablist"}, TABS.map(function(x){
+        return T.button({key:x[0], role:"tab", "aria-selected":tab===x[0], onClick:function(){ setTab(x[0]); }}, x[1]);
+      })))),
+    T.main({className:"app"},
+      err ? T.div({className:"err"}, err) : null,
+      tab==="schools" ? h(SchoolsView) :
+      tab==="rentals" ? h(RentalsView) :
+      tab==="timeline" ? h(TimelineView) : h(BriefView))
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+})();
+</script>
+</body>
+</html>

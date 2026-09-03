@@ -1,0 +1,17 @@
+# Static site — no build step. index.html is self-contained apart from
+# React (cdnjs) and the Google Fonts stylesheet.
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# The tracker keeps its data in the visitor's own browser on this host,
+# so it must not be cached aggressively across deploys.
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
