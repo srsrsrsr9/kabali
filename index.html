@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Tracker for the east Bengaluru school search and house hunt, AY 2027-28.">
 <meta name="color-scheme" content="light dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="DDK Tracker">
 <style>html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Doddanekkundi Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -201,7 +203,8 @@ var SCHOOLS = [
    phone:"+91 88610 04639", phone2:"+91 90717 66562",
    note:"Same logic as Narayana. High pressure — weigh differently for Grade 5 than Grade 9."},
   {id:"mtb-jjv", name:"MTB Jnana Jyothi Vidyanikethan", area:"Mahadevapura", km:3, upto:"?", fee:"?", read:"warn",
-   note:"Small local school, low fees. Number not found — check Class 9 seats and XI–XII before spending time."},
+   phone:"+91 73495 19927",
+   note:"Small local school, ~1,000 students, CBSE, opened 2010. Low fees. Check Class 9 seats and whether it runs XI–XII."},
   {id:"pragathi", name:"Pragathi School", area:"Mahadevapura", km:3, upto:"?", fee:"~70k–1.2L", read:"warn",
    phone:"+91 93413 47534", phone2:"+91 89049 44991", email:"pragathischooladmission@gmail.com",
    note:"Runs CBSE and state board, which sometimes means more language flexibility. Worth one call for that alone."},
@@ -218,20 +221,24 @@ var SCHOOLS = [
    phone:"080 4302 4471", phone2:"+91 97420 00633", email:"contact@mvjinternationalschool.edu.in",
    note:"Ranked #3 Whitefield-Plus CBSE and #15 Bengaluru, Times School Survey 2025–26. Best quality-per-rupee signal nearby."},
   {id:"narayana-kundalahalli", name:"Narayana Co School", area:"Kundalahalli", km:4, upto:"X", fee:"~60–85k", telugu:true, read:"idle",
-   note:"Same chain, second campus. Ask Narayana centrally about Telugu, then pick whichever campus has a Grade 9 seat."},
+   phone:"1800 102 3344", email:"blrmh.etechno@narayanagroup.com",
+   note:"Same chain, second campus. 1800 102 3344 is Narayana's chain-wide line — use it to ask about Telugu once, centrally, then pick whichever campus has a Grade 9 seat."},
   {id:"vagdevi", name:"Vagdevi Vilas", area:"Marathahalli", km:4, upto:"X", fee:"~77k", read:"warn",
    phone:"+91 80500 05851", phone2:"+91 96865 77189", email:"info@vvi.edu.in",
    note:"Applications open at Ganesha Chaturthi each year — i.e. right now. Ends at X."},
   {id:"genius-global", name:"Genius Global School", area:"Marathahalli", km:4, upto:"X", fee:"55k–1.06L", read:"stop",
+   phone:"080 4854 2975", phone2:"+91 97400 84742", email:"admission@geniusglobalschool.com",
    note:"Nursery–10 only, so not for Grade 9. Still viable for the Grade 5 child if the language answer is good."},
   {id:"janes", name:"Janes International", area:"Hoodi / Garudacharpalya", km:4.5, upto:"?", fee:"?", read:"warn",
-   note:"Could not confirm board, fees, grade range or number from any source. Get the basics before visiting."},
+   note:"The only school here I could not pin down at all — no number, no board, no fees. The nearest match in any registry is Janes English Primary School, Hoodi: private unaided, est. 1996, Grades 1–10, and listed as state board, not CBSE. If that is the same school it fails your board filter and ends at 10. Confirm from the Maps listing before spending a visit."},
   {id:"vrukksha", name:"The Vrukksha School", area:"Mahadevapura / Dooravani Nagar", km:5, upto:"?", fee:"~43–50k", read:"warn",
    phone:"+91 96324 46699", phone2:"+91 96634 46699",
    note:"Cheapest credible option in the ring. Newer school — ask directly about Class X results history."},
   {id:"sm-english", name:"SM English School", area:"Hoodi", km:5, upto:"?", fee:"?", read:"warn",
+   phone:"+91 76769 95557", email:"info@smschool.co.in",
    note:"Society founded 1965; board affiliation not confirmable online. Confirm it is CBSE before anything else."},
   {id:"gopalan-national", name:"Gopalan National School", area:"Mahadevapura", km:5, upto:"ICSE", fee:"—", read:"stop",
+   phone:"080 4155 4091", phone2:"080 4115 7829", email:"gns@gopalanschool.com",
    note:"ICSE, not CBSE. If you want the group, check Gopalan International at Hoodi instead — different board."},
   {id:"shishya-beml", name:"Shishya BEML Public School", area:"Kaggadasapura", km:6, upto:"XII", fee:"1.08–1.18L", read:"go",
    phone:"080 6452 0004", phone2:"080 2524 7242", email:"contact@shishyabemlschool.edu.in",
@@ -240,18 +247,22 @@ var SCHOOLS = [
    phone:"080 2527 2357", phone2:"+91 99001 36176",
    note:"25 years, 2.5-acre campus, ~1,100 students, Nursery–XII. Good size-to-attention ratio."},
   {id:"narayana-kaggadasapura", name:"Narayana e-Techno", area:"Kaggadasapura", km:6, upto:"X", fee:"~60–85k", telugu:true, read:"idle",
-   note:"Third Narayana campus in range."},
+   phone:"1800 102 3344", email:"principalkag@narayanagroup.com",
+   note:"Third Narayana campus in range. Its direct line was truncated in every listing, so the chain number is here instead — the principal's email is direct."},
   {id:"narayana-krpuram", name:"Narayana e-Techno", area:"KR Puram", km:6, upto:"X", fee:"~60–85k", telugu:true, read:"idle",
-   note:"Fourth Narayana campus in range."},
+   phone:"+91 70222 93859", phone2:"1800 102 3344",
+   note:"Fourth Narayana campus in range, on Hoodi Main Road. The listing rendered this number malformed; it fits Narayana's 70222-9xxxx branch series but try the chain line if it fails."},
   {id:"amara-jyothi", name:"Amara Jyothi Public School", area:"KR Puram / Devasandra", km:6.5, upto:"XII", fee:"low", read:"go",
    phone:"+91 63638 53388", phone2:"+91 83108 85066", email:"info@amarajyothipublicschool.edu.in",
    note:"Since 1998, Pre-Nursery to XII, genuinely inexpensive. Strong value play if the bus route reaches you."},
   {id:"orchids-cvrn", name:"Orchids The International", area:"CV Raman Nagar", km:6.5, upto:"X", fee:"1.19–2.3L", read:"stop",
+   phone:"+91 95139 23100", phone2:"+91 99994 31999",
    note:"Nursery–10 only and near the top of the band. Kannada explicitly not a prerequisite here — worth a language call for Grade 5."},
   {id:"euroschool", name:"EuroSchool", area:"Whitefield / Hoodi", km:7.5, upto:"XII", fee:"1.63–1.79L", read:"warn",
    phone:"+91 70385 55555", email:"connect@euroschoolindia.com",
    note:"Nursery–12, solid, and its site is already advertising 2027–28 admissions. Two children here plus transport lands right at the ₹5L ceiling."},
   {id:"narayana-kasturinagar", name:"Narayana Olympiad", area:"Kasturi Nagar", km:8, upto:"X", fee:"~60–85k", telugu:true, read:"idle",
+   phone:"+91 70222 93862", phone2:"+91 92436 03258",
    note:"Furthest Narayana. Only if it is the campus that says yes to Telugu."},
   {id:"vishwa-vidyapeeth", name:"Vishwa Vidyapeeth", area:"Varthur", km:8.5, upto:"XII", fee:"verify", read:"warn",
    phone:"+91 70220 09757", phone2:"+91 76762 27483", email:"enquiry@vishwavidyapeeth.edu.in",
@@ -260,9 +271,11 @@ var SCHOOLS = [
    phone:"+91 96208 12270", phone2:"080 4227 7351", email:"admission-psbe@presidency.edu.in",
    note:"Runs to XII, placement test for all entrants. Registration historically opens 1 October."},
   {id:"ppec", name:"Poornaprajna Education Centre", area:"Indiranagar", km:9.5, upto:"XII", fee:"verify", read:"stop",
+   phone:"080 2361 7465", phone2:"080 2361 9034",
    note:"Good school, wrong geography. From Doddanekkundi this is a daily crawl down ORR in both peaks."},
-  {id:"new-pratham", name:"New Pratham Public School", area:"unconfirmed", km:99, upto:"?", fee:"?", read:"warn",
-   note:"Nothing reliable surfaced. Get the address off the site and check it against your rental zone before spending a visit."}
+  {id:"new-pratham", name:"New Pratham Public School", area:"KR Puram · Pai Layout", km:7, upto:"?", fee:"?", read:"warn",
+   email:"kjrnpps@gmail.com",
+   note:"Now pinned down: Pai Layout, KR Puram 560016, CBSE affiliation 830770, co-ed, founded 2010. Every listing shows its phone truncated to 7 digits, so email is the way in."}
 ];
 
 var QUESTIONS = [
@@ -549,7 +562,7 @@ function SchoolsView(){
                 h(QuestionList,{s:s, sc:sc, rec:rec}),
                 h(SideFields,{s:s, sc:sc, rec:rec})) : null);
           })),
-      T.p({className:"hint"}, "Numbers came from public directories, not the schools — correct them in the call sheet as you go."));
+      T.p({className:"hint"}, "Numbers came from public directories, not the schools — correct them in the call sheet as you go. Only Janes International has no number at all."));
   }
 
   return T.div(null, controls,
@@ -589,7 +602,7 @@ function SchoolsView(){
                   h(SideFields,{s:s, sc:sc, rec:rec}))))) : null
             ];
           })))),
-    T.p({className:"hint"}, "Numbers came from public directories, not the schools — correct them in the call sheet as you go. Twelve schools had no number I could find; add them when you have one."));
+    T.p({className:"hint"}, "Numbers came from public directories, not the schools — correct them in the call sheet as you go. Only Janes International has no number at all; New Pratham and Narayana Kaggadasapura are reachable by email or the chain line."));
 }
 
 /* ==========================================================
