@@ -77,3 +77,12 @@ mutates it in place, so `useMemo` dependencies never changed and the
 header counters stayed at zero while the data underneath was correct.
 The store now exposes `rev()`, a counter bumped on every notify, and the
 memoised views depend on that instead.
+
+## Two builds in this repo
+
+| Path | Storage | Use it for |
+| --- | --- | --- |
+| `index.html` (root) | This device only | A single self-contained file to keep on a phone or laptop. React is inlined, so it needs no network at all. |
+| `web/` | Supabase, syncing across devices | The deployable app. Drop it on Netlify or Pages and connect a Supabase project — see `web/README.md`. |
+
+Both share the same catalogue and interface; only the storage layer differs.
