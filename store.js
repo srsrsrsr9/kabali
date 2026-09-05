@@ -77,6 +77,7 @@
   var authState = "off";     // off | signed-out | sending | signed-in | error
   var authEmail = null, userId = null, authNote = null;
   var pending = {};          // "col/id" -> true (deleted rows carry value "del")
+  var meta = {};             // { syncedFor: <user id this browser has already joined> }
 
   function notify() { rev++; for (var i = 0; i < subs.length; i++) subs[i](); }
   function key(col, id) { return col + "/" + id; }
@@ -97,6 +98,7 @@
   }
   function adopt(raw) {
     if (!raw || typeof raw !== "object") return false;
+    if (raw.__meta && typeof raw.__meta === "object") meta = raw.__meta;
     var any = false;
     COLS.forEach(function (c) {
       if (raw[c] && typeof raw[c] === "object") {
@@ -106,14 +108,19 @@
     });
     return any;
   }
+  function snapshot() {
+    var o = JSON.parse(JSON.stringify(cache));
+    o.__meta = meta;
+    return o;
+  }
   function saveLocal() {
     var ok = false;
     if (useLs) {
-      try { localStorage.setItem(LS_KEY, JSON.stringify(cache)); ok = true; }
+      try { localStorage.setItem(LS_KEY, JSON.stringify(snapshot())); ok = true; }
       catch (e) { useLs = false; }
     }
     if (useIdb) {
-      idb.set(JSON.parse(JSON.stringify(cache))).then(function () {}, function () { useIdb = false; notify(); });
+      idb.set(snapshot()).then(function () {}, function () { useIdb = false; notify(); });
       ok = true;
     }
     if (!ok && mode !== "cloud") {
@@ -149,6 +156,20 @@
       (r.data || []).forEach(function (row) {
         if (fresh[row.collection]) fresh[row.collection][row.doc_id] = row.data || {};
       });
+      /* First time this browser joins an account, anything already typed
+         here belongs to the person signing in — adopt it and push it up.
+         On later syncs the server wins, so a delete made on another device
+         is not resurrected by this one's stale copy. */
+      var firstJoin = meta.syncedFor !== userId;
+      if (firstJoin) {
+        COLS.forEach(function (col) {
+          Object.keys(cache[col] || {}).forEach(function (id) {
+            if (!(id in fresh[col])) { fresh[col][id] = cache[col][id]; pending[key(col, id)] = true; }
+          });
+        });
+        meta.syncedFor = userId;
+      }
+
       /* Anything edited offline and not yet pushed must survive the pull. */
       Object.keys(pending).forEach(function (k) {
         var p = k.split("/"), col = p[0], id = p.slice(1).join("/");
