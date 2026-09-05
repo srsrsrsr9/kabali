@@ -431,7 +431,10 @@ function BackupPanel(props){
 function AuthBar(props){
   var a = props.auth;
   var e = useState(""), email = e[0], setEmail = e[1];
-  if (a.state === "off") return null;
+  if (a.state === "off"){
+    return a.reason ? T.div({className:"authbar"},
+      T.span({className:"note-inline bad"}, "Syncing is off. ", a.reason)) : null;
+  }
 
   if (a.state === "signed-in"){
     return T.div({className:"authbar"},

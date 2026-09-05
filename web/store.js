@@ -129,6 +129,17 @@
               cfg.supabaseUrl.indexOf("YOUR-") < 0 &&
               window.supabase && window.supabase.createClient);
   }
+  /* When syncing is off the sign-in bar has nothing to show, and silently
+     showing nothing is how a stale cached config.js goes unnoticed. */
+  function configReason() {
+    if (!cfg.supabaseUrl || !cfg.supabaseAnonKey)
+      return "config.js did not load, or carries no Supabase URL and key.";
+    if (cfg.supabaseUrl.indexOf("YOUR-") >= 0)
+      return "config.js still holds its placeholder values. If you have already filled them in, this is a cached copy — reload with Ctrl+Shift+R (Cmd+Shift+R on a Mac).";
+    if (!(window.supabase && window.supabase.createClient))
+      return "vendor/supabase.js did not load, so there is nothing to sign in to.";
+    return null;
+  }
 
   function pull() {
     if (!sb || !userId) return Promise.resolve();
@@ -272,6 +283,7 @@
     auth: function () {
       return {
         state: configured() ? authState : "off",
+        reason: configured() ? null : configReason(),
         email: authEmail,
         note: authNote,
         signIn: function (email) {
