@@ -12,9 +12,11 @@ var T = new Proxy({}, { get:function(_,tag){
 var useState = React.useState, useEffect = React.useEffect, useMemo = React.useMemo;
 
 var D = window.TrackerData;
+var useRef = React.useRef;
 var SCHOOLS=D.SCHOOLS, QUESTIONS=D.QUESTIONS, PHASES=D.PHASES, ZONES=D.ZONES;
 var STATUS=D.STATUS, TELUGU=D.TELUGU, RSTATUS=D.RSTATUS;
 var look=D.look, telHref=D.telHref;
+var OFFICE=D.OFFICE, COORDS=D.COORDS, mapsUrl=D.mapsUrl;
 var store = window.TrackerStore;
 
 function useStore(){
@@ -291,6 +293,71 @@ function RentalsView(){
 }
 
 /* ==========================================================
+   MAP — where the shortlist actually sits, against the office
+   ========================================================== */
+var PIN = {none:"#8A97A3", queued:"#1B5FB0", called:"#C08215", shortlist:"#1B8A57", reject:"#B4453A"};
+
+function MapView(){
+  var s = useStore();
+  var box = useRef(null), map = useRef(null), pins = useRef(null);
+
+  useEffect(function(){
+    if (!window.L || !box.current || map.current) return;
+    var m = window.L.map(box.current, {scrollWheelZoom:false});
+    window.L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {maxZoom:19, attribution:"&copy; OpenStreetMap contributors"}).addTo(m);
+
+    window.L.circle([OFFICE.lat, OFFICE.lng],
+      {radius:5000, color:"#1B5FB0", weight:1, opacity:.45, fill:false, dashArray:"5 5"}).addTo(m);
+    window.L.circleMarker([OFFICE.lat, OFFICE.lng],
+      {radius:8, color:"#0D2B4F", weight:2, fillColor:"#1B5FB0", fillOpacity:1}).addTo(m)
+      .bindPopup("<b>"+OFFICE.name+"</b><br>"+OFFICE.note+"<br><i>dashed ring = 5 km</i>");
+
+    pins.current = window.L.layerGroup().addTo(m);
+    var pts = SCHOOLS.map(function(sc){ return COORDS[sc.id]; }).filter(Boolean);
+    pts.push([OFFICE.lat, OFFICE.lng]);
+    m.fitBounds(window.L.latLngBounds(pts).pad(0.08));
+    map.current = m;
+    var t = setTimeout(function(){ m.invalidateSize(); }, 150);
+    return function(){ clearTimeout(t); };
+  }, []);
+
+  useEffect(function(){
+    if (!pins.current) return;
+    pins.current.clearLayers();
+    SCHOOLS.forEach(function(sc){
+      var at = COORDS[sc.id]; if (!at) return;
+      var rec = s.get("schools", sc.id) || {};
+      var st  = rec.status || "none";
+      var num = rec.phone || sc.phone;
+      var body =
+        "<b>" + sc.name + "</b><br>" +
+        "<span style='color:#667'>" + sc.area + " &middot; ~" + (sc.km===99?"?":sc.km) + " km &middot; to " + sc.upto + "</span><br>" +
+        "&#8377; " + (rec.fee || sc.fee) + "<br>" +
+        "<b>" + look(STATUS, st).l + "</b> &middot; " + look(TELUGU, rec.telugu || "unknown").l + "<br><br>" +
+        (num ? "<a href='" + telHref(num) + "'>Call " + num + "</a><br>" : "") +
+        "<a href='" + mapsUrl(sc) + "' target='_blank' rel='noopener noreferrer'>Open in Google Maps &#8599;</a>";
+      window.L.circleMarker(at, {
+        radius: st==="shortlist" ? 9 : 7,
+        color:"#20303F", weight:1.5, fillColor:PIN[st] || PIN.none, fillOpacity:.92
+      }).addTo(pins.current).bindPopup(body);
+    });
+  }, [s.rev()]);
+
+  return T.div(null,
+    T.div({className:"maplegend"},
+      T.span({className:"lg-item"}, T.i({className:"dot", style:{background:"#1B5FB0", borderColor:"#0D2B4F"}}), "IndiQube ETA + 5 km"),
+      STATUS.map(function(x){
+        return T.span({className:"lg-item", key:x.v}, T.i({className:"dot", style:{background:PIN[x.v]}}), x.l);
+      })),
+    T.div({className:"mapbox", ref:box}),
+    T.p({className:"hint"},
+      "Pins sit at the centre of the locality in each school's address, not at its gate — there was no geocoding service available when this was built. Use them to see which side of the Outer Ring Road a school is on and how it sits against your office; tap a pin and ",
+      T.b(null,"Open in Google Maps"),
+      " for the real address and directions. Janes International is the one exact pin, taken from your Maps link."));
+}
+
+/* ==========================================================
    TIMELINE + BRIEF
    ========================================================== */
 function TimelineView(){
@@ -479,7 +546,7 @@ function App(){
   var doneTasks=Object.keys(tasks).filter(function(k){return tasks[k].done;}).length;
   var days=Math.max(0, Math.ceil((new Date(2027,1,28) - new Date())/86400000));
 
-  var TABS=[["schools","Schools"],["rentals","Rentals"],["timeline","Timeline"],["brief","The brief"]];
+  var TABS=[["schools","Schools"],["map","Map"],["rentals","Rentals"],["timeline","Timeline"],["brief","The brief"]];
 
   return T.div(null,
     T.header({className:"hdr"}, T.div({className:"hdr-in"},
@@ -517,6 +584,7 @@ function App(){
           ? "Notes are kept in this browser (" + s.backends() + "). They will not appear on your other devices, and clearing site data erases them. Fill in config.js with a Supabase project to sync them, or use the Backup panel on the Timeline tab to move them by hand."
           : "You are not signed in, so notes are kept in this browser (" + s.backends() + ") only. Sign in above and they will sync to your account and to your other devices.") : null,
       tab==="schools" ? h(SchoolsView) :
+      tab==="map" ? h(MapView) :
       tab==="rentals" ? h(RentalsView) :
       tab==="timeline" ? T.div(null, h(TimelineView), h(BackupPanel,{s:s})) : h(BriefView))
   );

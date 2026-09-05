@@ -166,9 +166,61 @@ var RSTATUS = [
 function look(list,v){ for(var i=0;i<list.length;i++) if(list[i].v===v) return list[i]; return list[0]; }
 function telHref(n){ return "tel:" + String(n||"").replace(/[^\d+]/g,""); }
 
+/* Approximate positions.
+ *
+ * These are locality centroids, not surveyed addresses: there was no
+ * geocoding service reachable when this was built, so each school sits at
+ * the middle of the area its address names. Good enough to see the shape of
+ * the shortlist against the office and to judge which side of ORR a school
+ * is on; not good enough to navigate by. Every marker links out to Google
+ * Maps, which resolves the real address from the school's name.
+ *
+ * Janes International is the exception and is exact — it came from a
+ * Google Maps pin.
+ */
+var OFFICE = {lat:12.9795, lng:77.6965, name:"IndiQube ETA", note:"No. 38/4, adjacent to EMC2, Doddanekkundi, ORR"};
+
+var COORDS = {
+  "vibgyor-rise":          [12.9790, 77.6970],
+  "ekya-itpl":             [12.9845, 77.7010],
+  "narayana-marathahalli": [12.9600, 77.7130],
+  "sri-chaitanya":         [12.9605, 77.7060],
+  "mtb-jjv":               [12.9905, 77.6975],
+  "pragathi":              [12.9915, 77.6950],
+  "nps-vibhuthipura":      [12.9700, 77.6810],
+  "rbgs-marathahalli":     [12.9575, 77.7015],
+  "brigade":               [12.9930, 77.6990],
+  "mvj":                   [12.9560, 77.7000],
+  "narayana-kundalahalli": [12.9680, 77.7150],
+  "vagdevi":               [12.9620, 77.7080],
+  "genius-global":         [12.9580, 77.7020],
+  "janes":                 [13.0038896, 77.7045969],
+  "vrukksha":              [12.9930, 77.6720],
+  "sm-english":            [12.9915, 77.7150],
+  "gopalan-national":      [12.9760, 77.7120],
+  "shishya-beml":          [12.9800, 77.6620],
+  "geethanjali":           [12.9840, 77.6690],
+  "narayana-kaggadasapura":[12.9855, 77.6700],
+  "narayana-krpuram":      [12.9990, 77.7080],
+  "amara-jyothi":          [13.0050, 77.7070],
+  "orchids-cvrn":          [12.9840, 77.6600],
+  "euroschool":            [12.9940, 77.7130],
+  "narayana-kasturinagar": [13.0060, 77.6540],
+  "vishwa-vidyapeeth":     [12.9350, 77.7480],
+  "presidency-east":       [13.0080, 77.6520],
+  "ppec":                  [12.9750, 77.6400],
+  "new-pratham":           [13.0020, 77.6980]
+};
+
+function mapsUrl(sc){
+  return "https://www.google.com/maps/search/?api=1&query=" +
+         encodeURIComponent(sc.name + " school " + sc.area + " Bengaluru");
+}
+
 window.TrackerData = {
   SCHOOLS: SCHOOLS, QUESTIONS: QUESTIONS, PHASES: PHASES, ZONES: ZONES,
   STATUS: STATUS, TELUGU: TELUGU, RSTATUS: RSTATUS,
-  look: look, telHref: telHref
+  look: look, telHref: telHref,
+  OFFICE: OFFICE, COORDS: COORDS, mapsUrl: mapsUrl
 };
 })();

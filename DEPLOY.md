@@ -18,7 +18,7 @@ else. Connecting Supabase is an upgrade, not a prerequisite.
 | `store.js` | Storage: Supabase, with IndexedDB and localStorage as local mirrors. |
 | `app.js` | The interface. |
 | `styles.css` | Styling, light and dark. |
-| `vendor/` | React and the Supabase client, vendored so there is no CDN to depend on. |
+| `vendor/` | React, the Supabase client and Leaflet, vendored so there is no CDN to depend on. |
 | `netlify.toml` | Netlify settings. No build step; publish directory is `.`. |
 
 ## Setting up Supabase
@@ -96,3 +96,21 @@ and realtime, because the Supabase host is unreachable from the machine
 this was built on. If a sign-in link opens but never signs you in, the
 cause is almost always step 3 — the deployed address missing from
 Authentication → URL Configuration → Redirect URLs.
+
+## The map
+
+The Map tab uses Leaflet with OpenStreetMap tiles, not the Google Maps
+JavaScript API. That API needs a key with billing enabled on a Google
+Cloud project, which is a bigger commitment than a map of 29 pins
+deserves; Leaflet and OSM need nothing. Every pin still links out to
+Google Maps for the real address and directions.
+
+Pins are locality centroids, not geocoded addresses — no geocoding
+service was reachable when this was built. They are accurate enough to
+show which side of the Outer Ring Road a school is on and how the
+shortlist sits against the office. Janes International is exact, from a
+Google Maps link.
+
+To correct a pin, edit `COORDS` in `data.js`. To switch to Google Maps
+proper, you would add a key to `config.js` and swap the Leaflet calls in
+`MapView`; say so and it can be done.
