@@ -183,3 +183,13 @@ select.mini{font-size:.74rem;padding:4px 6px;max-width:148px}
 .leaflet-popup-content{font-family:"Source Serif 4",Georgia,serif;font-size:.86rem;line-height:1.5}
 .leaflet-popup-content a{color:#1B5FB0;font-family:Archivo,sans-serif;font-weight:600;font-size:.8rem}
 .leaflet-container{font:inherit;border-radius:4px}
+
+/* ---- map pin labels (hover) ---- */
+.leaflet-tooltip.pin-label{
+  font-family:Archivo,"Helvetica Neue",Arial,sans-serif;font-size:.74rem;font-weight:600;
+  background:#16202B;color:#F2F5F8;border:none;border-radius:3px;padding:4px 8px;
+  box-shadow:0 2px 8px rgba(0,0,0,.28);white-space:nowrap
+}
+.leaflet-tooltip.pin-label.office{background:#1B5FB0}
+.leaflet-tooltip.pin-label::before{border-top-color:#16202B}
+.leaflet-tooltip.pin-label.office::before{border-top-color:#1B5FB0}

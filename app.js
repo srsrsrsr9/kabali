@@ -299,7 +299,7 @@ var PIN = {none:"#8A97A3", queued:"#1B5FB0", called:"#C08215", shortlist:"#1B8A5
 
 function MapView(){
   var s = useStore();
-  var box = useRef(null), map = useRef(null), pins = useRef(null);
+  var box = useRef(null), map = useRef(null), pins = useRef(null), office = useRef(null);
 
   useEffect(function(){
     if (!window.L || !box.current || map.current) return;
@@ -309,8 +309,13 @@ function MapView(){
 
     window.L.circle([OFFICE.lat, OFFICE.lng],
       {radius:5000, color:"#1B5FB0", weight:1, opacity:.45, fill:false, dashArray:"5 5"}).addTo(m);
-    window.L.circleMarker([OFFICE.lat, OFFICE.lng],
-      {radius:8, color:"#0D2B4F", weight:2, fillColor:"#1B5FB0", fillOpacity:1}).addTo(m)
+    /* Bigger and ringed, because a school pin sits ~60 m away and would
+       otherwise bury it. Kept in a ref so it can be raised above the pin
+       layer, which is drawn after it on every redraw. */
+    office.current = window.L.circleMarker([OFFICE.lat, OFFICE.lng],
+      {radius:11, color:"#FFFFFF", weight:3, fillColor:"#1B5FB0", fillOpacity:1}).addTo(m)
+      .bindTooltip(OFFICE.name + " \u00b7 your office",
+                   {direction:"top", offset:[0,-9], className:"pin-label office", opacity:1})
       .bindPopup("<b>"+OFFICE.name+"</b><br>"+OFFICE.note+"<br><i>dashed ring = 5 km</i>");
 
     pins.current = window.L.layerGroup().addTo(m);
@@ -340,8 +345,12 @@ function MapView(){
       window.L.circleMarker(at, {
         radius: st==="shortlist" ? 9 : 7,
         color:"#20303F", weight:1.5, fillColor:PIN[st] || PIN.none, fillOpacity:.92
-      }).addTo(pins.current).bindPopup(body);
+      }).addTo(pins.current)
+        .bindTooltip(sc.name + " \u00b7 " + sc.area,
+                     {direction:"top", offset:[0,-8], className:"pin-label", opacity:1})
+        .bindPopup(body);
     });
+    if (office.current && office.current.bringToFront) office.current.bringToFront();
   }, [s.rev()]);
 
   return T.div(null,
