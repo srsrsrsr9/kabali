@@ -199,7 +199,10 @@
     } catch (e) { /* realtime is a bonus; polling on reload still works */ }
   }
 
+  var signedInFor = null;
   function onSignedIn(session) {
+    if (signedInFor === session.user.id) return;   // getSession and onAuthStateChange both fire at boot
+    signedInFor = session.user.id;
     userId = session.user.id;
     authEmail = session.user.email;
     authState = "signed-in";
@@ -215,7 +218,7 @@
 
     sb.auth.onAuthStateChange(function (_evt, session) {
       if (session && session.user) { onSignedIn(session); }
-      else { userId = null; authEmail = null; authState = "signed-out"; mode = "device"; notify(); }
+      else { signedInFor = null; userId = null; authEmail = null; authState = "signed-out"; mode = "device"; notify(); }
     });
 
     sb.auth.getSession().then(function (r) {

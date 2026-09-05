@@ -1,17 +1,15 @@
-/* Fill these in to turn on syncing, then redeploy.
+/* Supabase connection for this deployment.
  *
- * Supabase → Project Settings → Data API (or API):
- *   supabaseUrl     is the Project URL,  https://xxxxxxxx.supabase.co
- *   supabaseAnonKey is the "anon" / "publishable" key
+ * The publishable (anon) key is meant to be public — it ships in every
+ * Supabase browser app and is visible to anyone who opens this page. What
+ * protects the rows is the row-level security policy in schema.sql: a
+ * signed-in user can read and write only rows where user_id = auth.uid().
+ * Never put the service_role / secret key here; that one bypasses RLS.
  *
- * The anon key is meant to be public — it ships in every Supabase browser
- * app. What protects your rows is the row-level security policy in
- * schema.sql, which lets a signed-in user touch only their own. Never put
- * the "service_role" key in this file: that one bypasses RLS entirely.
- *
- * Left as-is, the tracker still works and saves to this device only.
+ * If these are blanked out the tracker still works, saving to whichever
+ * device it is opened on and nothing else.
  */
 window.TRACKER_CONFIG = {
-  supabaseUrl: "https://YOUR-PROJECT.supabase.co",
-  supabaseAnonKey: "YOUR-ANON-KEY"
+  supabaseUrl: "https://fhymnqrtfdolmedurlcd.supabase.co",
+  supabaseAnonKey: "sb_publishable_ivZC4xHSu6H08gampLoBpA_FyEsnVUL"
 };

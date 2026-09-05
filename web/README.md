@@ -74,13 +74,25 @@ everything as JSON. Use it before switching phones.
 
 ## What has and has not been tested
 
-Verified in Chromium: the catalogue renders, edits persist across a
-reload from IndexedDB, the sign-in bar appears and validates once
-`config.js` is filled in, and the page falls back cleanly when Supabase
-is absent.
+Verified in Chromium, with the real vendored supabase-js and its HTTP
+calls intercepted:
 
-**Not verified against a live Supabase project** — I had no project to
-point at. The sign-in round trip, the upsert, the delete and the realtime
-subscription are written to the documented API but unproven. If something
-misbehaves after you connect, the browser console plus Supabase's Logs →
-API view will name it, and step 3 above is the usual culprit.
+- the catalogue renders and edits survive a reload out of IndexedDB;
+- a seeded session is detected — the badge reads *Synced to your account*
+  and the sign-in bar shows the signed-in address;
+- the initial pull runs exactly once and rows that exist only on the
+  server appear in the UI;
+- an edit issues `POST /rest/v1/tracker_rows?on_conflict=user_id,collection,doc_id`
+  carrying exactly the five table columns;
+- deleting a row issues `DELETE ...?collection=eq.<c>&doc_id=eq.<id>`;
+- with `config.js` blanked the app falls back cleanly to device storage.
+
+The delete filters on collection and doc_id only, not user_id. That is
+deliberate — the RLS policy scopes it to the caller's own rows, which is
+also what stops a client deleting anyone else's.
+
+**Not verified against the live project**: the sign-in email round trip
+and realtime, because the Supabase host is unreachable from the machine
+this was built on. If a sign-in link opens but never signs you in, the
+cause is almost always step 3 — the deployed address missing from
+Authentication → URL Configuration → Redirect URLs.
