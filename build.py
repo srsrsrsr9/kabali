@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Turn the Artifact-format sources into standalone HTML documents.
 
-index.html is fully self-contained: React is inlined from vendor/ so the file
+standalone.html is fully self-contained: React is inlined from vendor/ so the file
 works with no network at all, which a copy sitting on a phone needs.
 """
 import io, os, re, sys
@@ -41,7 +41,7 @@ def build(src, out, desc, inline_react):
     io.open(out, "w", encoding="utf-8").write(doc)
     print("%-12s %7d bytes  react=%s" % (out, len(doc), "inlined" if inline_react else "cdn"))
 
-build("src/tracker-app.artifact.html", "index.html",
+build("src/tracker-app.artifact.html", "standalone.html",
       "Tracker for the east Bengaluru school search and house hunt, AY 2027-28.", True)
 build("src/report.artifact.html", "report.html",
       "Schools and housing research for a family relocating to east Bengaluru, AY 2027-28.", False)

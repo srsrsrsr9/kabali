@@ -78,11 +78,16 @@ header counters stayed at zero while the data underneath was correct.
 The store now exposes `rev()`, a counter bumped on every notify, and the
 memoised views depend on that instead.
 
-## Two builds in this repo
+## Layout
+
+The deployable app lives at the repo root, so GitHub Pages serves it
+whichever source is configured — "GitHub Actions" or "Deploy from a
+branch". Keeping it in a subfolder meant the branch builder served the
+wrong file, which is a trap worth not re-setting.
 
 | Path | Storage | Use it for |
 | --- | --- | --- |
-| `index.html` (root) | This device only | A single self-contained file to keep on a phone or laptop. React is inlined, so it needs no network at all. |
-| `web/` | Supabase, syncing across devices | The deployable app. Drop it on Netlify or Pages and connect a Supabase project — see `web/README.md`. |
-
-Both share the same catalogue and interface; only the storage layer differs.
+| `index.html` + `app.js`, `store.js`, `data.js`, `styles.css`, `config.js`, `vendor/` | Supabase, syncing across devices | The deployed site. Setup steps in `DEPLOY.md`. |
+| `standalone.html` | This device only | One self-contained file with React inlined. Needs no network at all. |
+| `report.html` | — | The underlying research. |
+| `src/`, `build.py` | — | Sources for `standalone.html` and the Claude artifact build. |
